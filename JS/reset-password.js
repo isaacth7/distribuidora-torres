@@ -1,5 +1,5 @@
 // Ajustá esto a tu backend
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://distribuidora-torres.onrender.com";
 
 const params = new URLSearchParams(location.search);
 const token = params.get("token");

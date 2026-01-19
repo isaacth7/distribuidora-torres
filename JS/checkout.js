@@ -1,7 +1,7 @@
 // public/JS/checkout.js
 (() => {
   // ====== CONFIG ======
-  const API_BASE = 'http://localhost:3000';
+  const API_BASE = 'https://distribuidora-torres.onrender.com';
   const DEBUG = false;
 
   // ====== HELPERS ======
