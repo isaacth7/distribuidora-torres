@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Olvidé mi contraseña | Distribuidora Torres</title>
+  <link rel="stylesheet" href="../CSS/auth-recovery.css" />
+</head>
+
+<body>
+  <main class="page">
+    <section class="card" aria-label="Olvido de contraseña">
+      <header class="header">
+        <div class="brand">
+          <div class="mark" aria-hidden="true">
+            <span></span><span></span>
+          </div>
+          <div>
+            <h1>Distribuidora Torres</h1>
+            <p>Recuperación de cuenta</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <h2>¿Olvidaste tu contraseña?</h2>
+        <p class="muted">
+          Ingresá tu correo y te enviaremos un enlace para crear una nueva contraseña.
+        </p>
+
+        <form id="formForgot" class="form" autocomplete="off">
+          <label for="correo">Correo</label>
+          <div class="field">
+            <input id="correo" name="correo" type="email" placeholder="tucorreo@ejemplo.com" required />
+          </div>
+
+          <button class="btn primary" id="btnSend" type="submit">
+            Enviar enlace
+          </button>
+
+          <div class="status" id="status"></div>
+
+          <div class="links">
+            <a href="javascript:void(0)" id="goLogin">Volver al login</a>
+          </div>
+        </form>
+
+        <p class="note">
+          Si no recibís el correo, revisá spam o intentá de nuevo en unos minutos.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="../JS/olvido-contrasena.js"></script>
+</body>
+</html>

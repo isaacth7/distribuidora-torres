@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribuidora Torres</title>
+
+    <link rel="stylesheet" href="../CSS/Inicio.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <script src="../JS/auth.js" defer></script>
+    <script type="module" src="../JS/api.js"></script>
+
+</head>
+
+<body>
+
+    <!-- BARRA DE PROMOCION -->
+    <div class="barra_promo">
+        <div class="texto_promo">Envío Gratis por compras superiores a 20.000 colones</div>
+        <img class="flecha_promo" alt="icono_flecha" src="../Images/arrow-right.svg">
+    </div>
+
+    <!-- MENU Y BUSQUEDA -->
+    <div class="Menu">
+        <div class="barra_navegacion_superior">
+            <div class="contenedor_logo">
+                <a href="../HTML/Inicio.html" class="brand_link" aria-label="Ir al inicio">
+                    <img class="logo_empresa" src="../Images/logo_empresa.png" alt="Distribuidora Torres">
+                </a>
+            </div>
+
+            <!-- Barra de búsqueda accesible (ANTES era un div .barra_navegacion) -->
+            <form class="barra_navegacion" role="search" aria-label="Buscar productos" action="#" method="get">
+                <label class="sr-only" for="q">Buscar</label>
+                <img class="logo_buscar" alt="" src="../Images/buscar.svg" aria-hidden="true">
+                <input id="q" name="q" class="input_buscar" type="search" placeholder="Buscar aquí..."
+                    autocomplete="off">
+                <button class="btn_buscar" type="submit" aria-label="Buscar"></button>
+            </form>
+
+            <div class="contenedor_perfil">
+                <!-- Botón hamburguesa (nuevo) -->
+                <button class="btn_hamburger" aria-label="Abrir menú" aria-controls="menuCategorias"
+                    aria-expanded="false">
+                    <span class="sr-only">Abrir menú</span>
+                </button>
+
+                <button id="btnUser" class="icon_btn" aria-label="Mi cuenta" type="button">
+                    <img class="logo_perfil" src="../Images/perfil.svg" alt="">
+                    <!-- opcional: badge dinámico de login -->
+                    <span id="userBadge" class="badge" hidden>•</span>
+                </button>
+
+
+                <a href="/carrito" class="icon_btn" aria-label="Ver carrito">
+                    <img class="logo_perfil" src="../Images/bolsa.svg" alt="">
+                    <span class="badge" id="cartBadge" aria-hidden="true">3</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- NAV de categorías: reemplaza tu .barra_menu original -->
+        <nav id="menuCategorias" class="barra_menu" aria-label="Categorías">
+            <button class="btn_close_menu" aria-label="Cerrar menú"></button>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=2">Bolsas Basura</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=1">Bolsa Agarradera</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=6">Bolsa Rollo</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=4">Bolsa Papel</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Transparente</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=3">Polipropileno</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Blanca</a></div>
+        </nav>
+        <!-- Overlay para el off-canvas -->
+        <div class="menu_overlay" hidden></div>
+    </div>
+
+    <!-- ENCABEZADO (hero) -->
+    <div class="seccion_encabezado">
+        <div class="contenedor_encabezado">
+            <b class="titulo_encabezado">Cuida el medio ambiente, compra con nosotros</b>
+            <div class="texto_encabezado">
+                <p>Compra las mejores bolsas</p>
+                <p>y siempre al mejor precio</p>
+            </div>
+            <a href="../HTML/Nosotros.html" class="boton_encabezado">Saber más</a>
+        </div>
+        <img class="imagen_encabezado" alt="imagen de encabezado" src="../Images/imagen_encabezado.jpeg">
+    </div>
+
+    <!-- CATEGORIAS -->
+    <div class="seccion_categorias">
+        <div class="contenedor_categorias" aria-label="Categorías de productos">
+            <a href="../HTML/Producto.html?tipo=1" class="cat_card card--A" aria-label="Agarradera">
+                <img src="../Images/img1_banner.png" alt="Agarradera">
+                <span class="cat_pill">Agarradera</span>
+            </a>
+
+            <a href="../HTML/Producto.html?tipo=2" class="cat_card card--B" aria-label="Basura">
+                <img src="../Images/img2_banner.png" alt="Bolsas de basura">
+                <span class="cat_pill">Basura</span>
+            </a>
+
+            <a href="../HTML/Producto.html?tipo=6" class="cat_card card--C" aria-label="Rollos">
+                <img src="../Images/img3_banner.png" alt="Rollos de bolsa">
+                <span class="cat_pill">Rollos</span>
+            </a>
+
+            <a href="../HTML/Producto.html?tipo=3" class="cat_card card--D" aria-label="Polipropileno">
+                <img src="../Images/img4_banner.png" alt="Bolsas de polipropileno">
+                <span class="cat_pill">Polipropileno</span>
+            </a>
+
+            <a href="../HTML/Producto.html?tipo=5" class="cat_card card--E" aria-label="Transparente y Blanca">
+                <img src="../Images/img5_banner.png" alt="Bolsas Transparente y Blanca">
+                <span class="cat_pill">Transparente y Blanca</span>
+            </a>
+
+            <a href="../HTML/Producto.html?tipo=4" class="cat_card card--F" aria-label="Bolsas de Papel">
+                <img src="../Images/img6_banner.png" alt="Bolsas de Papel">
+                <span class="cat_pill">Bolsas de Papel</span>
+            </a>
+
+            <a href="../HTML/Producto.html?tipo=5" class="cat_card card--G" aria-label="Empaques">
+                <img src="../Images/img7_banner.png" alt="Empaques">
+                <span class="cat_pill">Empaques</span>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- SECCION MAS COMPRADO -->
+
+    <div class="seccion_mas_comprado">
+        <div class="contenedor_mas_comprado">
+            <b class="titulo_mas_comprado">Productos Más Solicitados</b>
+            <div class="subtitulo_mas_comprado">Buenos para el ambiente, mejor calidad</div>
+        </div>
+        <div class="contenedor_imagenes_mc">
+            <a class="carta_producto" href="/producto/bolsa-mediana-reno" aria-label="Ver Bolsa Mediana Reno">
+                <img class="imagen_producto" src="../Images/Carrusel-3.jpg" alt="Bolsa Mediana Reno">
+                <div class="desc_producto">Bolsa Mediana Agarradera</div>
+                <div class="contenedor_precio">
+                    <div class="rp99900">2.000₡ /k</div>
+                </div>
+            </a>
+
+            <a class="carta_producto" href="/producto/bolsa-polipropileno-indelsa"
+                aria-label="Ver Bolsa Polipropileno INDELSA">
+                <img class="imagen_producto" src="../Images/260_1.jpg" alt="Bolsa Polipropileno INDELSA">
+                <div class="desc_producto">Bolsa Polipropileno</div>
+                <div class="contenedor_precio">
+                    <div class="rp99900">3.000₡ /k</div>
+                </div>
+            </a>
+
+            <a class="carta_producto" href="/producto/bolsa-basura-grande" aria-label="Ver Bolsa Basura Grande">
+                <img class="imagen_producto" src="../Images/Bolsas-Basura.jpg" alt="Bolsa Basura Grande">
+                <div class="desc_producto">Bolsa Basura Grande</div>
+                <div class="contenedor_precio">
+                    <div class="rp99900">1.800₡ /k</div>
+                </div>
+            </a>
+
+            <a class="carta_producto" href="/producto/bolsa-papel-2" aria-label="Ver Bolsa Papel #2">
+                <img class="imagen_producto" src="../Images/Bolsa-Rollo.jpg" alt="Bolsa Papel #2">
+                <div class="desc_producto">Bolsa Rollo 7 x 25</div>
+                <div class="contenedor_precio">
+                    <div class="rp99900">2.300₡ /k</div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- SECCION MENSAJE COMPROMISO -->
+    <div class="seccion_mensaje">
+        <img class="imagen_mensaje" alt="foto de fondo mensaje" src="../Images/imagen_fondo_mensaje.jpg">
+
+        <div class="fg"></div>
+
+        <b class="texto_mensaje">
+            Compra sin culpa sabiendo que nuestro negocio se compromete completamente con el medio ambiente.
+        </b>
+
+        <img class="decoracion" src="../Images/decoracion_mensaje.png" alt="decoración de trazo">
+    </div>
+
+    <!-- SECCION POR QUÉ NOSOTROS -->
+    <div class="seccion_nosotros">
+        <b class="titulo_nosotros">¿Por Qué Comprar Con Nosotros?</b>
+        <div class="contenedor_nosotros">
+            <div class="bloque_nosotros">
+                <img class="icono_bloque" alt="" src="../Images/icono_envio.svg">
+                <div class="descripcion_bloque">
+                    <div class="descripcion_titulo">Envío Gratuito</div>
+                    <div class="descripcion_subtitulo">Compra ahora y el envío se incluye de manera gratuita</div>
+                </div>
+            </div>
+            <div class="bloque_nosotros">
+                <img class="icono_bloque" alt="" src="../Images/icono_sonrisa.svg">
+                <div class="descripcion_bloque">
+                    <div class="descripcion_titulo">Calidad Garantizada</div>
+                    <div class="descripcion_subtitulo">Garantizamos calidad en todas las compras que realices</div>
+                </div>
+            </div>
+            <div class="bloque_nosotros">
+                <img class="icono_bloque" alt="" src="../Images/icono_amigables.svg">
+                <div class="descripcion_bloque">
+                    <div class="descripcion_titulo">Amigables con el Ambiente</div>
+                    <div class="descripcion_subtitulo">Brindamos opciones de empaque completamente amigables con el
+                        ambiente</div>
+                </div>
+            </div>
+            <div class="bloque_nosotros">
+                <img class="icono_bloque" alt="" src="../Images/icono_servicio.svg">
+                <div class="descripcion_bloque">
+                    <div class="descripcion_titulo">Respuestas Rápidas</div>
+                    <div class="descripcion_subtitulo">Nuestro servicio opera 24/7 para la comodidad de tu negocio</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-background-top"></div>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="circle">
+                    <img src="../Images/logo_empresa2.png" alt="Distribuidora Torres" />
+                </div>
+            </div>
+
+            <div class="footer-columnas">
+                <div class="footer-columna">
+                    <h4>Distribuidora Torres</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Contáctenos</a></li>
+                        <li><a href="#">Ubicación</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-columna">
+                    <h4>Productos</h4>
+                    <ul>
+                        <li><a href="#">Bolsas Agarradera</a></li>
+                        <li><a href="#">Bolsas Basura</a></li>
+                        <li><a href="#">Polipropileno</a></li>
+                        <li><a href="#">Blanca y Transparente</a></li>
+                        <li><a href="#">Rollos</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-columna">
+                    <h4>Ayuda</h4>
+                    <ul>
+                        <li><a href="#">Envíos</a></li>
+                        <li><a href="#">Problemas con Pedido</a></li>
+                        <li><a href="#">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-columna">
+                    <h4>Pagos</h4>
+                    <div class="payment-icons">
+                        <img src="../Images/tarjeta_icono.png" alt="Tarjeta">
+                        <img src="../Images/efectivo_icono.png" alt="Efectivo">
+                        <img src="../Images/sinpe_icono.png" alt="Sinpe">
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="footer-bottom">
+                <div class="social-icons">
+                    <i class="fab fa-whatsapp"></i>
+                    <i class="fab fa-instagram"></i>
+                </div>
+                <p>© 2025 Distribuidora Torres. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Auth -->
+    <div id="authModal" class="auth-modal" aria-hidden="true">
+        <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+            <button class="auth-close" id="authClose" aria-label="Cerrar">&times;</button>
+
+            <h2 id="authTitle">Mi cuenta</h2>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login" type="button">Iniciar sesión</button>
+                <button class="auth-tab" data-tab="register" type="button">Crear cuenta</button>
+            </div>
+
+            <!-- LOGIN -->
+            <form id="loginForm" class="auth-form" data-tab-content="login" autocomplete="on">
+                <label>Email
+                    <input type="email" name="correo" required />
+                </label>
+                <label>Contraseña
+                    <input type="password" name="contrasena" minlength="8" required />
+                </label>
+                <button type="submit" class="auth-primary">Entrar</button>
+                <p class="auth-footnote">
+                    ¿No tienes cuenta? <a href="#" data-switch="register">Crear una</a>
+                </p>
+                <p class="auth-footnote">
+                    ¿Olvidaste la contraseña? <a href="../HTML/Olvido-Contrasena.html">Restablécela aquí</a>
+                </p>
+            </form>
+
+            <!-- REGISTRO -->
+            <form id="registerForm" class="auth-form hidden" data-tab-content="register" autocomplete="on">
+                <label>Email
+                    <input type="email" name="correo" required />
+                </label>
+                <label>Contraseña
+                    <input type="password" name="contrasena" minlength="8" required />
+                </label>
+                <details class="auth-optional">
+                    <summary>Datos opcionales</summary>
+                    <label>Nombre <input type="text" name="nombre" /></label>
+                    <label>Primer apellido <input type="text" name="primer_apellido" /></label>
+                    <label>Segundo apellido <input type="text" name="segundo_apellido" /></label>
+                    <label>Nombre del negocio <input type="text" name="negocio" /></label>
+                </details>
+                <button type="submit" class="auth-primary">Crear cuenta</button>
+                <p class="auth-footnote">
+                    ¿Ya tienes cuenta? <a href="#" data-switch="login">Iniciar sesión</a>
+                </p>
+            </form>
+
+            <!-- Feedback -->
+            <div id="authMsg" class="auth-msg" role="alert" aria-live="polite"></div>
+
+            <!-- Estado logueado (reemplazo) -->
+            <div id="loggedPanel" class="auth-logged hidden">
+                <div class="auth-user">
+                    <div class="avatar" id="avatarCircle" aria-hidden="true">U</div>
+                    <div class="info">
+                        <p class="hello">¡Hola, <span id="helloName"></span>!</p>
+                        <p class="email" id="helloEmail"></p>
+                    </div>
+                </div>
+
+                <div class="auth-grid">
+                    <a href="/HTML/Perfil.html#pedidos" class="auth-card">
+                        <span class="auth-card-title">Mis pedidos</span>
+                        <span class="auth-card-sub">Compras y estados</span>
+                    </a>
+                    <a href="/HTML/Perfil.html#direcciones" class="auth-card">
+                        <span class="auth-card-title">Mis direcciones</span>
+                        <span class="auth-card-sub">Entrega y facturación</span>
+                    </a>
+                    <a href="/HTML/Perfil.html" class="auth-card">
+                        <span class="auth-card-title">Mi perfil</span>
+                        <span class="auth-card-sub">Datos personales</span>
+                    </a>
+                    <!-- Tarjeta Admin solo si el rol es admin (se muestra vía JS) -->
+                    <a href="/HTML/Admin.html" id="adminCard" class="auth-card hidden">
+                        <span class="auth-card-title">Admin</span>
+                        <span class="auth-card-sub">Panel de gestión</span>
+                    </a>
+                </div>
+
+                <button id="btnLogout" class="auth-danger wide" type="button">Cerrar sesión</button>
+                <div id="logoutConfirm" class="logout-confirm hidden" role="alertdialog" aria-live="polite">
+                    <p>¿Cerrar sesión ahora?</p>
+                    <div class="actions">
+                        <button id="confirmLogout" class="auth-danger">Sí, cerrar</button>
+                        <button id="cancelLogout" class="auth-primary ghost">Cancelar</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="auth-backdrop"></div>
+    </div>
+
+    <!-- Mini Cart Drawer -->
+    <div id="miniCartOverlay" class="mc-overlay" hidden></div>
+    <aside id="miniCart" class="mc-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="mcTitle">
+        <header class="mc-header">
+            <h2 id="mcTitle">Tu carrito</h2>
+            <button class="mc-close" aria-label="Cerrar">&times;</button>
+        </header>
+
+        <div class="mc-content">
+            <ul id="mcList" class="mc-list"></ul>
+            <div id="mcEmpty" class="mc-empty" hidden>Tu carrito está vacío.</div>
+        </div>
+
+        <footer class="mc-footer">
+            <div class="mc-subtotal">Subtotal: <strong id="mcSubtotal">₡ 0,00</strong></div>
+            <div class="mc-actions">
+                <button id="mcClear" class="mc-btn-outlined" type="button">Vaciar</button>
+                <a href="/carrito" class="mc-btn-outlined">Ir al carrito</a>
+
+                <!-- Botón para abrir el checkout (pónlo donde tengas el carrito) -->
+                <button id="btnCheckout" class="mc-btn-primary">Finalizar compra</button>
+
+                <!-- ===== CHECKOUT MODAL ===== -->
+                <dialog id="checkoutDialog" class="ck-dialog">
+                    <form method="dialog" class="ck-card" id="checkoutForm" aria-label="Checkout">
+
+                        <div class="ck-grid">
+                            <!-- ============ LEFT: PAYMENT ============ -->
+                            <section class="ck-left">
+                                <h2 class="ck-title">Pago</h2>
+                                <hr class="ck-sep" />
+
+                                <!-- Banner si hay rollos -->
+                                <div id="rolloNotice" class="ck-banner" hidden>
+                                    Esta orden incluye rollos (peso variable). El total mostrado es <b>estimado.</b>
+                                    Te notificaremos el precio final después de pesar los rollos, y seguidamente puedes 
+                                    completar el pago. Nunca vas a pagar más del precio total estimado.
+                                </div>
+
+                                <!-- Delivery -->
+                                <div class="ck-block">
+                                    <label class="ck-label">Forma de entrega</label>
+                                    <div class="ck-radio-row">
+                                        <label class="ck-radio">
+                                            <input type="radio" name="delivery_method" value="retiro" checked>
+                                            <span>Retiro en tienda</span>
+                                        </label>
+                                        <label class="ck-radio">
+                                            <input type="radio" name="delivery_method" value="envio">
+                                            <span>Envío</span>
+                                        </label>
+                                        <label class="ck-radio">
+                                            <input type="radio" name="delivery_method" value="ruta">
+                                            <span>Entrega en ruta</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="ck-field" id="addressWrap" hidden>
+                                        <label for="addressSelect" class="ck-sublabel">Dirección de envío</label>
+                                        <select id="addressSelect" class="ck-input"></select>
+                                        <div class="ck-help">
+                                            <a href="../HTML/Perfil.html#direcciones" target="_blank"
+                                                rel="noopener">Agregar o editar direcciones</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pay with -->
+                                <div class="ck-block">
+                                    <label class="ck-label">Método de pago:</label>
+                                    <div class="ck-radio-row">
+                                        <label class="ck-radio">
+                                            <input type="radio" name="payment_method" value="efectivo" checked>
+                                            <span>Efectivo</span>
+                                        </label>
+                                        <label class="ck-radio">
+                                            <input type="radio" name="payment_method" value="sinpe">
+                                            <span>SINPE</span>
+                                        </label>
+                                        <label class="ck-radio ck-disabled">
+                                            <input type="radio" name="payment_method" value="tarjeta" disabled>
+                                            <span>Tarjeta</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Card fields (placeholder, deshabilitado por ahora) -->
+                                <div class="ck-block ck-card-fields" aria-disabled="true" id="cardWrap">
+                                    <label class="ck-sublabel">Número de tarjeta</label>
+                                    <input class="ck-input" type="text" inputmode="numeric"
+                                        placeholder="1234 5678 9101 1121" disabled>
+
+                                    <div class="ck-row">
+                                        <div class="ck-col">
+                                            <label class="ck-sublabel">Fecha de expiración</label>
+                                            <input class="ck-input" type="text" placeholder="MM/YY" disabled>
+                                        </div>
+                                        <div class="ck-col">
+                                            <label class="ck-sublabel">CVV</label>
+                                            <input class="ck-input" type="text" placeholder="123" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SINPE upload (solo si NO hay rollos y eligen sinpe) -->
+                                <div class="ck-block" id="sinpeWrap" hidden>
+                                    <p class="ck-hint">Transferir al <strong>SINPE 8XX-XXXX-XXXX</strong> y subir
+                                        comprobante </p>
+                                    <input type="file" id="sinpeReceipt" class="ck-input"
+                                        accept="image/*,application/pdf">
+                                </div>
+
+                                <!-- Texto cuando hay rollos (pago pendiente) -->
+                                <div class="ck-block" id="pendingWrap" hidden>
+                                    <p class="ck-hint">Te notificaremos el precio final después de pesar los rollos.
+                                        Seguidamente puedes completar el pago.</p>
+                                </div>
+
+                                <!-- Primary action -->
+                                <button type="button" class="ck-btn-primary" id="btnConfirm">
+                                    <span id="btnConfirmLabel">Confirmar pedido</span>
+                                </button>
+
+                                <p class="ck-privacy">
+                                    Tus datos personales serán utilizados para procesar tu orden.
+                                </p>
+                            </section>
+
+                            <!-- ============ RIGHT: ORDER SUMMARY ============ -->
+                            <aside class="ck-right">
+                                <h3 class="ck-title-sm">Resumen de la Orden</h3>
+
+                                <div id="ckCartList" class="ck-list"><!-- render items --></div>
+
+                                <hr class="ck-sep" />
+
+                                <div class="ck-coupon">
+                                    <input type="text" id="couponCode" class="ck-input"
+                                        placeholder="Código de descuento">
+                                    <button type="button" class="ck-btn-muted" id="btnApplyCoupon">Aplicar</button>
+                                </div>
+
+                                <div class="ck-block">
+                                    <label for="ckNotes" class="ck-label">Notas (opcional)</label>
+                                    <textarea id="ckNotes" class="ck-input" rows="2"
+                                        placeholder="Ej: Entregar antes de las 5pm"></textarea>
+                                </div>
+
+                                <div class="ck-totals">
+                                    <div class="ck-line"><span>Subtotal</span><strong id="ckSubtotal">₡0</strong></div>
+                                    <div class="ck-line"><span>Envío</span><strong id="ckShipping">₡0</strong></div>
+                                    <hr class="ck-sep thin" />
+                                    <div class="ck-line total"><span>Total</span><strong id="ckTotal">₡0</strong></div>
+                                    <div class="ck-tax-note">Incluyendo impuestos.</div>
+                                </div>
+                            </aside>
+                        </div>
+
+                        <!-- Close (X) -->
+                        <button type="button" class="ck-close" id="ckClose" aria-label="Close">×</button>
+                    </form>
+                </dialog>
+
+            </div>
+        </footer>
+    </aside>
+
+
+    <!-- incluye CSS y JS del auth -->
+    <link rel="stylesheet" href="../CSS/auth.css">
+    <script src="../JS/auth.js" defer></script>
+    <script src="../JS/header.js" defer></script>
+    <script src="../JS/cart.js" defer></script>
+    <script src="../JS/checkout.js" defer></script>
+
+</body>
+
+</html>

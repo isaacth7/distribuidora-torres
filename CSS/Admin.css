@@ -1,0 +1,226 @@
+:root{
+  --font-body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --font-title:'Libre Baskerville',Georgia,serif;
+
+  /* Paleta del sitio */
+  --c-text:#333;
+  --c-muted:#666;
+  --c-border:#e5e5e5;
+  --c-brand:#658c4a;
+  --c-brand-2:#89bc68;
+  --c-ok:#27ae60;
+  --c-bg:#fff;
+  --c-surface:#fff;
+  --c-highlight:#ffefe5;
+
+  /* Derivados */
+  --text:var(--c-text);
+  --muted:var(--c-muted);
+  --border:var(--c-border);
+  --brand:var(--c-brand);
+  --brand-ghost:color-mix(in srgb, var(--c-brand) 10%, white);
+  --brand-strong:color-mix(in srgb, var(--c-brand) 85%, black);
+  --ok:var(--c-ok);
+  --bg:#fafafa;
+  --surface:#fff;
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; font-family:var(--font-body); color:var(--text); background:var(--bg); }
+
+.ad-topbar{
+  height:64px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 16px; background:var(--surface); border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:20;
+}
+.ad-brand img{ height:40px; display:block; }
+.ad-env{ margin-left:12px; font:700 14px var(--font-body); color:var(--brand-strong); background:var(--brand-ghost); padding:6px 10px; border-radius:999px; }
+.ad-top-left{ display:flex; align-items:center; gap:8px; }
+.ad-top-right{ display:flex; gap:8px; align-items:center; }
+
+.ad-btn{
+  border:1px solid var(--brand); color:#fff; background:var(--brand);
+  padding:8px 14px; border-radius:12px; font-weight:700; cursor:pointer;
+}
+.ad-btn.ghost{ background:#fff; color:var(--brand-strong); border-color:var(--border); }
+.ad-btn.primary{ background:var(--brand); color:#fff; }
+.ad-btn.danger{ background:#c0392b; border-color:#c0392b; }
+
+.ad-layout{ display:grid; grid-template-columns:280px 1fr; min-height:calc(100vh - 64px); }
+
+.ad-sidebar{
+  background:color-mix(in srgb, var(--c-brand) 12%, white);
+  border-right:1px solid var(--border); padding:16px; position:sticky; top:64px; height:calc(100vh - 64px); overflow:auto;
+}
+.ad-menu-toggle{ display:none; margin-bottom:10px; border:0; background:transparent; font-size:20px; }
+.ad-nav{ display:flex; flex-direction:column; gap:6px; }
+.ad-nav-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; cursor:pointer;
+  color:var(--text); text-decoration:none; font-weight:700;
+}
+.ad-nav-item.active{ background:var(--surface); border:1px solid var(--border); }
+
+.ad-content{ padding:22px 28px; }
+
+.ad-panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.ad-title{ font-family:var(--font-title); font-size:26px; margin:0; }
+
+.ad-kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+.ad-kpi{
+  background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px;
+  display:flex; flex-direction:column; gap:4px; box-shadow:0 8px 18px rgba(0,0,0,.04);
+}
+.ad-kpi-label{ color:var(--muted); font-size:12px; }
+.ad-kpi-value{ font:900 22px var(--font-body); }
+
+.ad-card{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px; }
+.ad-card + .ad-card{ margin-top:12px; }
+.ad-card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+
+.ad-filters{
+  display:grid; grid-template-columns:repeat(6,1fr); gap:10px; align-items:end;
+  background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:12px;
+}
+.ad-filters.compact{ grid-template-columns:repeat(4,1fr); }
+.ad-field{ display:flex; flex-direction:column; gap:6px; }
+.ad-field.small{ max-width:180px; }
+.ad-field label{ font-weight:700; font-size:12px; }
+.ad-field input, .ad-field select{
+  width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:#fff;
+}
+.ad-actions{ display:flex; gap:10px; }
+
+.ad-table-wrap{ overflow:auto; border:1px solid var(--border); border-radius:14px; background:var(--surface); }
+table.ad-table{ width:100%; border-collapse:collapse; }
+.ad-table th, .ad-table td{ padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:14px; }
+.ad-table thead th{ background:#fafafa; font-weight:800; }
+.ad-row-actions{ display:flex; gap:8px; justify-content:flex-end; }
+
+.ad-chip{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  color:#fff;
+  border:1px solid rgba(0,0,0,.08);
+}
+
+
+.ad-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin:12px 0; }
+.ad-media-card{
+  border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--surface);
+  display:flex; flex-direction:column;
+}
+.ad-media-card img{ width:100%; height:140px; object-fit:cover; display:block; background:#f5f5f5; }
+.ad-media-body{ padding:10px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+
+.ad-pager{ display:flex; gap:8px; align-items:center; justify-content:flex-end; margin:10px 2px; }
+.ad-pager button{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer; }
+.ad-pager .info{ color:var(--muted); font-size:12px; margin-right:auto; padding-left:6px; }
+
+.ad-dialog{ width:min(560px,92vw); border:none; border-radius:16px; padding:0; }
+.ad-dialog::backdrop{ background:rgba(0,0,0,.35); }
+.ad-form{ padding:16px; }
+.ad-form h3{ margin:0 0 10px; }
+.ad-form .ad-actions{ margin-top:10px; }
+
+#adToast{
+  position:fixed; right:16px; bottom:16px; z-index:9999;
+  max-width:320px; padding:12px 16px; border-radius:12px;
+  background:var(--brand); color:#fff; box-shadow:0 8px 24px rgba(0,0,0,.25);
+  opacity:0; transform:translateY(12px); pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease; font:800 14px/1.3 var(--font-body);
+}
+#adToast.show{ opacity:1; transform:translateY(0); }
+
+/* Responsive */
+@media (max-width:1080px){ .ad-kpis{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:960px){
+  .ad-layout{ grid-template-columns:1fr; }
+  .ad-sidebar{ position:static; height:auto; }
+  .ad-menu-toggle{ display:block; }
+  .ad-nav{ display:none; }
+  .ad-nav.open{ display:flex; }
+  .ad-filters{ grid-template-columns:1fr 1fr; }
+}
+
+/* =========================
+   PF styles (solo para modal detalle admin)
+   ========================= */
+
+/* Hacemos el dialog más grande como el del cliente */
+#dlgAdminOrderDetail.ad-dialog{
+  width: min(920px, 96vw);
+}
+
+/* Reutilizamos componentes visuales pf dentro del admin modal */
+#dlgAdminOrderDetail .pf-sheet{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.04);
+}
+
+#dlgAdminOrderDetail .pf-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  
+}
+
+#dlgAdminOrderDetail .pf-sep{
+  margin: 14px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+#dlgAdminOrderDetail .pf-sep.thin{
+  margin: 10px 0;
+}
+
+#dlgAdminOrderDetail .pf-line{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+#dlgAdminOrderDetail .pf-card-list{
+  display:grid;
+  gap: 6px;
+}
+
+/* Tabla dentro del modal: mejor spacing */
+#dlgAdminOrderDetail table{
+  width:100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+#dlgAdminOrderDetail th,
+#dlgAdminOrderDetail td{
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+#dlgAdminOrderDetail thead th{
+  color: var(--muted);
+  font-weight: 800;
+  background: #fafafa;
+}
+
+/* Input del peso para que combine */
+#dlgAdminOrderDetail .ad-input{
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  font: 600 14px/1.2 var(--font-body);
+  color: var(--text);
+}

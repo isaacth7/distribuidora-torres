@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel Admin · Distribuidora Torres</title>
+
+    <!-- Fuentes y estilos globales -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Libre+Baskerville:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Estilos base del sitio -->
+    <link rel="stylesheet" href="../CSS/auth.css">
+    <!-- Estilos del panel admin -->
+    <link rel="stylesheet" href="../CSS/Admin.css">
+    <link rel="stylesheet" href="../CSS/Perfil.css">
+</head>
+
+<body>
+    <!-- Topbar -->
+    <header class="ad-topbar">
+        <div class="ad-top-left">
+            <a class="ad-brand" href="../HTML/Inicio.html" aria-label="Ir al inicio">
+                <img src="../Images/logo_empresa.png"
+                    srcset="../Images/logo_empresa@2x.png 2x, ../Images/logo_empresa@3x.png 3x"
+                    alt="Distribuidora Torres">
+            </a>
+            <div class="ad-env">Admin</div>
+        </div>
+        <div class="ad-top-right">
+            <button id="adRefresh" class="ad-btn ghost" title="Refrescar">⟳</button>
+            <a class="ad-btn" href="../HTML/Perfil.html#perfil">Mi perfil</a>
+            <button id="adLogout" class="ad-btn danger">Salir</button>
+        </div>
+    </header>
+
+    <!-- Layout -->
+    <main class="ad-layout">
+        <!-- Sidebar -->
+        <aside class="ad-sidebar" aria-label="Menú de administración">
+            <button id="adMenuToggle" class="ad-menu-toggle" aria-label="Mostrar menú">☰</button>
+            <nav class="ad-nav">
+                <a class="ad-nav-item active" data-tab="dashboard"><span>🏠</span> Resumen</a>
+                <a class="ad-nav-item" data-tab="orders"><span>🧾</span> Órdenes</a>
+                <a class="ad-nav-item" data-tab="media"><span>🖼️</span> Imágenes de subtipos</a>
+                <a class="ad-nav-item" data-tab="users"><span>👥</span> Usuarios</a>
+                <a class="ad-nav-item" data-tab="settings"><span>⚙️</span> Ajustes</a>
+            </nav>
+        </aside>
+
+        <!-- Content -->
+        <section class="ad-content">
+
+            <!-- DASHBOARD -->
+            <article id="tab-dashboard" class="ad-panel">
+                <header class="ad-panel-head">
+                    <h1 class="ad-title">Resumen</h1>
+                </header>
+
+                <div class="ad-kpis">
+                    <div class="ad-kpi">
+                        <div class="ad-kpi-label">Órdenes hoy</div>
+                        <div id="kpiOrdersToday" class="ad-kpi-value">—</div>
+                    </div>
+                    <div class="ad-kpi">
+                        <div class="ad-kpi-label">Pend. de pago</div>
+                        <div id="kpiPendingPay" class="ad-kpi-value">—</div>
+                    </div>
+                    <div class="ad-kpi">
+                        <div class="ad-kpi-label">Pend. de pesaje</div>
+                        <div id="kpiPendingWeight" class="ad-kpi-value">—</div>
+                    </div>
+                    <div class="ad-kpi">
+                        <div class="ad-kpi-label">Total recaudado</div>
+                        <div id="kpiAmount" class="ad-kpi-value">—</div>
+                    </div>
+                </div>
+
+                <div class="ad-card">
+                    <div class="ad-card-head">
+                        <h3>Últimas 10 órdenes</h3>
+                        <button class="ad-btn ghost" data-go="orders">Ver todas</button>
+                    </div>
+                    <div id="dashLastOrders" class="ad-table-wrap"></div>
+                </div>
+            </article>
+
+            <!-- ORDERS -->
+            <article id="tab-orders" class="ad-panel" hidden>
+                <header class="ad-panel-head">
+                    <h1 class="ad-title">Órdenes</h1>
+                </header>
+
+                <form id="ordFilters" class="ad-filters" autocomplete="off">
+                    <div class="ad-field">
+                        <label>Buscar</label>
+                        <input name="q" placeholder="ID, usuario, correo…" />
+                    </div>
+                    <div class="ad-field">
+                        <label>Estado</label>
+                        <select name="estado">
+                            <option value="">Todos</option>
+                            <option value="2">Pendiente de pesaje</option>
+                            <option value="3">Pendiente de pago</option>
+                            <option value="4">Pagado</option>
+                            <option value="5">Preparando</option>
+                            <option value="6">Enviado</option>
+                            <option value="7">Completado</option>
+                            <option value="8">Cancelado</option>
+                            <option value="9">Pago fallado</option>
+                            <option value="10">Remmbolso total</option>
+                            <option value="11">Reembolso Parcial</option>
+                        </select>
+                    </div>
+                    <div class="ad-field">
+                        <label>Método de pago</label>
+                        <select name="pago">
+                            <option value="">Todos</option>
+                            <option value="efectivo">Efectivo</option>
+                            <option value="sinpe">SINPE Móvil</option>
+                            <option value="tarjeta">Tarjeta</option>
+                        </select>
+                    </div>
+                    <div class="ad-field">
+                        <label>Entrega</label>
+                        <select name="entrega">
+                            <option value="">Todas</option>
+                            <option value="retiro">Retiro</option>
+                            <option value="ruta">Ruta</option>
+                            <option value="domicilio">Domicilio</option>
+                        </select>
+                    </div>
+                    <div class="ad-field small">
+                        <label>Desde</label>
+                        <input type="date" name="desde" />
+                    </div>
+                    <div class="ad-field small">
+                        <label>Hasta</label>
+                        <input type="date" name="hasta" />
+                    </div>
+                    <div class="ad-actions">
+                        <button class="ad-btn primary" type="submit">Aplicar</button>
+                        <button class="ad-btn ghost" type="reset">Limpiar</button>
+                    </div>
+                </form>
+
+                <div id="ordersTable" class="ad-table-wrap"></div>
+                <div id="ordersPager" class="ad-pager"></div>
+            </article>
+
+            <!-- MEDIA: imágenes por subtipo -->
+            <article id="tab-media" class="ad-panel" hidden>
+                <header class="ad-panel-head">
+                    <h1 class="ad-title">Imágenes de subtipos</h1>
+                </header>
+
+                <form id="mediaPicker" class="ad-filters compact">
+                    <div class="ad-field">
+                        <label>ID subtipo</label>
+                        <input name="id_subtipo" type="number" min="1" placeholder="Ej: 12" required />
+                    </div>
+                    <div class="ad-actions">
+                        <button class="ad-btn primary" type="submit">Cargar</button>
+                    </div>
+                </form>
+
+                <div id="mediaGrid" class="ad-grid"></div>
+
+                <div class="ad-actions">
+                    <button id="mediaNewUrl" class="ad-btn">Agregar por URL</button>
+                    <button id="mediaUpload" class="ad-btn primary">Subir archivo</button>
+                </div>
+            </article>
+
+            <!-- USERS -->
+            <article id="tab-users" class="ad-panel" hidden>
+                <header class="ad-panel-head">
+                    <h1 class="ad-title">Usuarios</h1>
+                </header>
+
+                <form id="usrFilters" class="ad-filters">
+                    <div class="ad-field">
+                        <label>Buscar</label>
+                        <input name="q" placeholder="Nombre, correo…" />
+                    </div>
+                    <div class="ad-field">
+                        <label>Rol</label>
+                        <select name="rol">
+                            <option value="">Todos</option>
+                            <option value="1">Cliente</option>
+                            <option value="2">Admin</option>
+                        </select>
+                    </div>
+                    <div class="ad-actions">
+                        <button class="ad-btn primary" type="submit">Buscar</button>
+                    </div>
+                </form>
+
+                <div id="usersTable" class="ad-table-wrap"></div>
+                <div id="usersPager" class="ad-pager"></div>
+            </article>
+
+            <!-- SETTINGS (placeholder para crecer) -->
+            <article id="tab-settings" class="ad-panel" hidden>
+                <header class="ad-panel-head">
+                    <h1 class="ad-title">Ajustes</h1>
+                </header>
+                <div class="ad-card">
+                    <p>Aquí podrás gestionar catálogos, costos de envío, contenido estático, etc. (futuro).</p>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+    <!-- Dialogs reutilizables -->
+    <dialog id="dlgStatus" class="ad-dialog">
+        <form method="dialog" id="formStatus" class="ad-form">
+            <h3>Cambiar estado de orden</h3>
+            <input type="hidden" name="id_orden" />
+            <div class="ad-field">
+                <label>Nuevo estado</label>
+                <select name="id_estado" required>
+                    <option value="2">Pendiente de pesaje</option>
+                    <option value="3">Pendiente de pago</option>
+                    <option value="4">Pagado</option>
+                    <option value="5">Preparando</option>
+                    <option value="6">Enviado</option>
+                    <option value="7">Completado</option>
+                    <option value="8">Cancelado</option>
+                    <option value="9">Fallo pago</option>
+                    <option value="10">Reembolso Total</option>
+                    <option value="11">Reembolso parcial</option>
+                </select>
+            </div>
+            <div class="ad-actions">
+                <button class="ad-btn ghost" value="cancel">Cancelar</button>
+                <button class="ad-btn primary" value="ok">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlgImage" class="ad-dialog">
+        <form method="dialog" id="formImage" class="ad-form">
+            <h3 id="dlgImageTitle">Nueva imagen</h3>
+            <input type="hidden" name="id_subtipo" />
+            <div class="ad-field" data-mode="url">
+                <label>URL de imagen</label>
+                <input name="url_imagen" placeholder="https://…" />
+            </div>
+            <div class="ad-field" data-mode="file" hidden>
+                <label>Archivo</label>
+                <input name="file" type="file" accept="image/*" />
+            </div>
+            <div class="ad-field">
+                <label>Descripción</label>
+                <input name="descripcion" maxlength="255" />
+            </div>
+            <div class="ad-field small">
+                <label>Orden</label>
+                <input name="orden" type="number" min="1" value="1" />
+            </div>
+            <div class="ad-actions">
+                <button class="ad-btn ghost" value="cancel">Cancelar</button>
+                <button class="ad-btn primary" value="ok">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dlgUser" class="ad-dialog">
+        <form method="dialog" id="formUser" class="ad-form">
+            <h3>Editar usuario</h3>
+            <input type="hidden" name="id_usuario" />
+
+            <div class="ad-field">
+                <label>Nombre</label>
+                <input name="nombre" />
+            </div>
+
+            <div class="ad-field">
+                <label>Primer apellido</label>
+                <input name="primer_apellido" />
+            </div>
+
+            <div class="ad-field">
+                <label>Segundo apellido</label>
+                <input name="segundo_apellido" />
+            </div>
+
+            <div class="ad-field">
+                <label>Correo</label>
+                <input name="correo" type="email" />
+            </div>
+
+            <div class="ad-field">
+                <label>Negocio</label>
+                <input name="negocio" />
+            </div>
+
+            <div class="ad-actions">
+                <button class="ad-btn ghost" value="cancel">Cancelar</button>
+                <button class="ad-btn primary" value="ok">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Toast -->
+    <div id="adToast" role="status" aria-live="polite"></div>
+
+    <!-- JS base -->
+    <script src="../JS/auth.js" defer></script>
+    <script type="module" src="../JS/api.js"></script>
+    <!-- JS del panel -->
+    <script src="../JS/admin.js" defer></script>
+</body>
+
+</html>

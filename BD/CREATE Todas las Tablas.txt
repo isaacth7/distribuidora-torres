@@ -1,0 +1,403 @@
+-- Table: public.tipo_bolsa
+
+-- DROP TABLE IF EXISTS public.tipo_bolsa;
+
+CREATE TABLE IF NOT EXISTS public.tipo_bolsa
+(
+    id_tipo_bolsa integer NOT NULL DEFAULT nextval('tipo_bolsa_id_tipo_bolsa_seq'::regclass),
+    nombre_bolsa character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT tipo_bolsa_pkey PRIMARY KEY (id_tipo_bolsa)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.tipo_bolsa
+    OWNER to postgres;
+--------
+
+-- Table: public.subtipos_bolsas
+
+-- DROP TABLE IF EXISTS public.subtipos_bolsas;
+
+CREATE TABLE IF NOT EXISTS public.subtipos_bolsas
+(
+    id_subtipo_bolsa integer NOT NULL DEFAULT nextval('subtipos_bolsas_id_subtipo_bolsa_seq'::regclass),
+    id_tipo_bolsa integer,
+    nombre_subtipo_bolsa character varying(100) COLLATE pg_catalog."default",
+    descripcion_subtipo text COLLATE pg_catalog."default",
+    CONSTRAINT subtipos_bolsas_pkey PRIMARY KEY (id_subtipo_bolsa),
+    CONSTRAINT subtipos_bolsas_id_tipo_bolsa_fkey FOREIGN KEY (id_tipo_bolsa)
+        REFERENCES public.tipo_bolsa (id_tipo_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.subtipos_bolsas
+    OWNER to postgres;
+
+------
+
+-- Table: public.tipos_entrega
+
+-- DROP TABLE IF EXISTS public.tipos_entrega;
+
+CREATE TABLE IF NOT EXISTS public.tipos_entrega
+(
+    id_tipo_entrega integer NOT NULL DEFAULT nextval('tipos_entrega_id_tipo_entrega_seq'::regclass),
+    nombre character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    descripcion text COLLATE pg_catalog."default",
+    CONSTRAINT tipos_entrega_pkey PRIMARY KEY (id_tipo_entrega)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.tipos_entrega
+    OWNER to postgres;
+----
+-- Table: public.roles_usuarios
+
+-- DROP TABLE IF EXISTS public.roles_usuarios;
+
+CREATE TABLE IF NOT EXISTS public.roles_usuarios
+(
+    id_rol_usuario integer NOT NULL DEFAULT nextval('roles_usuarios_id_rol_usuario_seq'::regclass),
+    nombre character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT roles_usuarios_pkey PRIMARY KEY (id_rol_usuario),
+    CONSTRAINT roles_usuarios_nombre_key UNIQUE (nombre)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.roles_usuarios
+    OWNER to postgres;
+---
+-- Table: public.estados_orden
+
+-- DROP TABLE IF EXISTS public.estados_orden;
+
+CREATE TABLE IF NOT EXISTS public.estados_orden
+(
+    id_estado integer NOT NULL DEFAULT nextval('estados_orden_id_estado_seq'::regclass),
+    nombre character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    descripcion text COLLATE pg_catalog."default",
+    orden integer DEFAULT 0,
+    es_final boolean DEFAULT false,
+    CONSTRAINT estados_orden_pkey PRIMARY KEY (id_estado),
+    CONSTRAINT estados_orden_nombre_key UNIQUE (nombre)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.estados_orden
+    OWNER to postgres;
+---
+-- Table: public.metodos_pago
+
+-- DROP TABLE IF EXISTS public.metodos_pago;
+
+CREATE TABLE IF NOT EXISTS public.metodos_pago
+(
+    id_metodo_pago integer NOT NULL DEFAULT nextval('metodos_pago_id_metodo_pago_seq'::regclass),
+    nombre character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    descripcion text COLLATE pg_catalog."default",
+    CONSTRAINT metodos_pago_pkey PRIMARY KEY (id_metodo_pago)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.metodos_pago
+    OWNER to postgres;
+---
+-- Table: public.usuarios
+
+-- DROP TABLE IF EXISTS public.usuarios;
+
+CREATE TABLE IF NOT EXISTS public.usuarios
+(
+    id_usuario integer NOT NULL DEFAULT nextval('usuarios_id_usuario_seq'::regclass),
+    id_rol_usuario integer,
+    nombre character varying(100) COLLATE pg_catalog."default",
+    primer_apellido character varying(100) COLLATE pg_catalog."default",
+    segundo_apellido character varying(100) COLLATE pg_catalog."default",
+    correo character varying(100) COLLATE pg_catalog."default",
+    contrasena text COLLATE pg_catalog."default" NOT NULL,
+    fecha_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT usuarios_pkey PRIMARY KEY (id_usuario),
+    CONSTRAINT usuarios_correo_key UNIQUE (correo),
+    CONSTRAINT usuarios_id_rol_usuario_fkey FOREIGN KEY (id_rol_usuario)
+        REFERENCES public.roles_usuarios (id_rol_usuario) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.usuarios
+    OWNER to postgres;
+---
+-- Table: public.pricing_regla
+
+-- DROP TABLE IF EXISTS public.pricing_regla;
+
+CREATE TABLE IF NOT EXISTS public.pricing_regla
+(
+    id_pricing_regla integer NOT NULL DEFAULT nextval('pricing_regla_id_pricing_regla_seq'::regclass),
+    id_tipo_bolsa integer,
+    id_subtipo_bolsa integer,
+    id_bolsa integer,
+    estrategia pricing_strategy NOT NULL,
+    moneda text COLLATE pg_catalog."default" NOT NULL DEFAULT 'CRC'::text,
+    precio_por_kg numeric(12,2),
+    precio_por_unidad numeric(12,2),
+    precio_por_pack numeric(12,2),
+    pack_qty integer,
+    min_qty integer,
+    prioridad integer NOT NULL DEFAULT 100,
+    vigente_desde date NOT NULL DEFAULT CURRENT_DATE,
+    vigente_hasta date,
+    CONSTRAINT pricing_regla_pkey PRIMARY KEY (id_pricing_regla),
+    CONSTRAINT pricing_regla_id_bolsa_fkey FOREIGN KEY (id_bolsa)
+        REFERENCES public.bolsas (id_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT pricing_regla_id_subtipo_bolsa_fkey FOREIGN KEY (id_subtipo_bolsa)
+        REFERENCES public.subtipos_bolsas (id_subtipo_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT pricing_regla_id_tipo_bolsa_fkey FOREIGN KEY (id_tipo_bolsa)
+        REFERENCES public.tipo_bolsa (id_tipo_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.pricing_regla
+    OWNER to postgres;
+-- Index: idx_pricing_targets
+
+-- DROP INDEX IF EXISTS public.idx_pricing_targets;
+
+CREATE INDEX IF NOT EXISTS idx_pricing_targets
+    ON public.pricing_regla USING btree
+    (id_bolsa ASC NULLS LAST, id_subtipo_bolsa ASC NULLS LAST, id_tipo_bolsa ASC NULLS LAST, estrategia ASC NULLS LAST, pack_qty ASC NULLS LAST, min_qty ASC NULLS LAST, vigente_desde ASC NULLS LAST)
+    TABLESPACE pg_default;
+---
+-- Table: public.ordenes
+
+-- DROP TABLE IF EXISTS public.ordenes;
+
+CREATE TABLE IF NOT EXISTS public.ordenes
+(
+    id_orden integer NOT NULL DEFAULT nextval('ordenes_id_orden_seq'::regclass),
+    id_usuario integer,
+    fecha timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    total double precision,
+    tipo_entrega integer,
+    id_direccion integer,
+    id_metodo_pago integer,
+    id_estado integer,
+    CONSTRAINT ordenes_pkey PRIMARY KEY (id_orden),
+    CONSTRAINT ordenes_id_direccion_fkey FOREIGN KEY (id_direccion)
+        REFERENCES public.direcciones_usuario (id_direccion) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT ordenes_id_estado_fkey FOREIGN KEY (id_estado)
+        REFERENCES public.estados_orden (id_estado) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT ordenes_id_metodo_pago_fkey FOREIGN KEY (id_metodo_pago)
+        REFERENCES public.metodos_pago (id_metodo_pago) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT ordenes_id_usuario_fkey FOREIGN KEY (id_usuario)
+        REFERENCES public.usuarios (id_usuario) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT ordenes_tipo_entrega_fkey FOREIGN KEY (tipo_entrega)
+        REFERENCES public.tipos_entrega (id_tipo_entrega) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.ordenes
+    OWNER to postgres;
+---
+-- Table: public.orden_productos
+
+-- DROP TABLE IF EXISTS public.orden_productos;
+
+CREATE TABLE IF NOT EXISTS public.orden_productos
+(
+    id_orden integer NOT NULL,
+    id_bolsa integer NOT NULL,
+    cantidad integer,
+    precio_unitario numeric(10,2),
+    CONSTRAINT orden_productos_pkey PRIMARY KEY (id_orden, id_bolsa),
+    CONSTRAINT orden_productos_id_bolsa_fkey FOREIGN KEY (id_bolsa)
+        REFERENCES public.bolsas (id_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT orden_productos_id_orden_fkey FOREIGN KEY (id_orden)
+        REFERENCES public.ordenes (id_orden) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.orden_productos
+    OWNER to postgres;
+---
+-- Table: public.inventario
+
+-- DROP TABLE IF EXISTS public.inventario;
+
+CREATE TABLE IF NOT EXISTS public.inventario
+(
+    id_movimiento integer NOT NULL DEFAULT nextval('inventario_id_movimiento_seq'::regclass),
+    id_bolsa integer,
+    cantidad double precision,
+    tipo_movimiento character varying(20) COLLATE pg_catalog."default",
+    fecha timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    encargado integer,
+    CONSTRAINT inventario_pkey PRIMARY KEY (id_movimiento),
+    CONSTRAINT inventario_encargado_fkey FOREIGN KEY (encargado)
+        REFERENCES public.usuarios (id_usuario) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT inventario_id_bolsa_fkey FOREIGN KEY (id_bolsa)
+        REFERENCES public.bolsas (id_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.inventario
+    OWNER to postgres;
+---
+-- Table: public.imagenes_subtipos
+
+-- DROP TABLE IF EXISTS public.imagenes_subtipos;
+
+CREATE TABLE IF NOT EXISTS public.imagenes_subtipos
+(
+    id_imagen integer NOT NULL DEFAULT nextval('imagenes_subtipos_id_imagen_seq'::regclass),
+    id_subtipo_bolsa integer NOT NULL,
+    url_imagen text COLLATE pg_catalog."default" NOT NULL,
+    descripcion text COLLATE pg_catalog."default",
+    orden integer DEFAULT 1,
+    CONSTRAINT imagenes_subtipos_pkey PRIMARY KEY (id_imagen),
+    CONSTRAINT imagenes_subtipos_id_subtipo_bolsa_fkey FOREIGN KEY (id_subtipo_bolsa)
+        REFERENCES public.subtipos_bolsas (id_subtipo_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.imagenes_subtipos
+    OWNER to postgres;
+---
+-- Table: public.carritos
+
+-- DROP TABLE IF EXISTS public.carritos;
+
+CREATE TABLE IF NOT EXISTS public.carritos
+(
+    id_carrito integer NOT NULL DEFAULT nextval('carritos_id_carrito_seq'::regclass),
+    id_usuario integer,
+    estado character varying(20) COLLATE pg_catalog."default" DEFAULT 'ACTIVO'::character varying,
+    fecha timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT carritos_pkey PRIMARY KEY (id_carrito),
+    CONSTRAINT carritos_id_usuario_fkey FOREIGN KEY (id_usuario)
+        REFERENCES public.usuarios (id_usuario) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.carritos
+    OWNER to postgres;
+---
+-- Table: public.carrito_productos
+
+-- DROP TABLE IF EXISTS public.carrito_productos;
+
+CREATE TABLE IF NOT EXISTS public.carrito_productos
+(
+    id_carrito integer NOT NULL,
+    id_bolsa integer NOT NULL,
+    cantidad integer NOT NULL,
+    CONSTRAINT carrito_productos_pkey PRIMARY KEY (id_carrito, id_bolsa),
+    CONSTRAINT carrito_productos_id_bolsa_fkey FOREIGN KEY (id_bolsa)
+        REFERENCES public.bolsas (id_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT carrito_productos_id_carrito_fkey FOREIGN KEY (id_carrito)
+        REFERENCES public.carritos (id_carrito) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.carrito_productos
+    OWNER to postgres;
+---
+-- Table: public.bolsas
+
+-- DROP TABLE IF EXISTS public.bolsas;
+
+CREATE TABLE IF NOT EXISTS public.bolsas
+(
+    id_bolsa integer NOT NULL DEFAULT nextval('bolsas_id_bolsa_seq'::regclass),
+    id_tipo_bolsa integer,
+    id_subtipo_bolsa integer,
+    ancho double precision,
+    alto double precision,
+    descripcion_bolsa text COLLATE pg_catalog."default",
+    precio numeric,
+    CONSTRAINT bolsas_pkey PRIMARY KEY (id_bolsa),
+    CONSTRAINT bolsas_id_subtipo_bolsa_fkey FOREIGN KEY (id_subtipo_bolsa)
+        REFERENCES public.subtipos_bolsas (id_subtipo_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT bolsas_id_tipo_bolsa_fkey FOREIGN KEY (id_tipo_bolsa)
+        REFERENCES public.tipo_bolsa (id_tipo_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.bolsas
+    OWNER to postgres;
+---
+-- Table: public.bolsa_fisica
+
+-- DROP TABLE IF EXISTS public.bolsa_fisica;
+
+CREATE TABLE IF NOT EXISTS public.bolsa_fisica
+(
+    id_bolsa integer NOT NULL,
+    peso_kg_por_unidad numeric(10,5),
+    peso_kg_por_rollo numeric(10,5),
+    unidades_por_pack integer,
+    CONSTRAINT bolsa_fisica_pkey PRIMARY KEY (id_bolsa),
+    CONSTRAINT bolsa_fisica_id_bolsa_fkey FOREIGN KEY (id_bolsa)
+        REFERENCES public.bolsas (id_bolsa) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.bolsa_fisica
+    OWNER to postgres;

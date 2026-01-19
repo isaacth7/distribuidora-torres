@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mi perfil</title>
+
+    <!-- Fuentes y estilos globales -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Libre+Baskerville:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Estilos del sitio + perfil -->
+    <link rel="stylesheet" href="../CSS/auth.css">
+    <link rel="stylesheet" href="../CSS/Perfil.css">
+</head>
+
+<body>
+    <!-- Barra superior simple con logo y regreso -->
+    <header class="pf-header pf-header-center">
+        <a class="pf-back" href="../HTML/Inicio.html" aria-label="Volver al inicio">←</a>
+        <a class="pf-brand" href="../HTML/Inicio.html" aria-label="Ir al inicio">
+            <img src="../Images/logo_empresa2.png" alt="Distribuidora Torres">
+        </a>
+        <div class="pf-spacer"></div>
+    </header>
+
+    <main class="pf-layout">
+        <!-- Sidebar -->
+        <aside class="pf-sidebar" aria-label="Configuración de cuenta">
+            <button id="pfMenuToggle" class="pf-menu-toggle" aria-label="Mostrar menú">☰</button>
+            <h2 class="pf-sidebar-title">Configuración</h2>
+            <nav class="pf-nav">
+                <a class="pf-nav-item" data-tab="perfil">
+                    <span class="pf-ico">
+                        <!-- Usuario -->
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4Z" />
+                        </svg>
+                    </span>
+                    Editar Perfil
+                </a>
+
+                <a class="pf-nav-item" data-tab="direcciones">
+                    <span class="pf-ico">
+                        <!-- Pin / dirección -->
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5Z" />
+                        </svg>
+                    </span>
+                    Direcciones
+                </a>
+
+                <a class="pf-nav-item" data-tab="pedidos">
+                    <span class="pf-ico">
+                        <!-- Pedidos / caja -->
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M21 7 12 2 3 7v10l9 5 9-5Zm-9 13-7-3.89V9l7 3.89Zm1-6.11L6.26 8.5 12 5.11 17.74 8.5Z" />
+                        </svg>
+                    </span>
+                    Mis Pedidos
+                </a>
+
+                <a class="pf-nav-item" data-tab="ayuda">
+                    <span class="pf-ico">
+                        <!-- Ayuda -->
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 17h-2v-2h2Zm2.07-7.75-.9.92A3.49 3.49 0 0 0 13 15h-2v-.5a4.5 4.5 0 0 1 1.17-3l1.24-1.26a1.5 1.5 0 1 0-2.56-1.06H9a3.5 3.5 0 1 1 6.07 2.07Z" />
+                        </svg>
+                    </span>
+                    Ayuda
+                </a>
+
+                <a class="pf-nav-item" data-tab="notificaciones">
+                    <span class="pf-ico">
+                        <!-- Campana -->
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 22a2.5 2.5 0 0 0 2.5-2.5h-5A2.5 2.5 0 0 0 12 22Zm6-6V11a6 6 0 0 0-5-5.91V4a1 1 0 0 0-2 0v1.09A6 6 0 0 0 6 11v5l-2 2v1h16v-1Z" />
+                        </svg>
+                    </span>
+                    Notificaciones
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido -->
+        <section class="pf-content">
+
+            <!-- PERFIL -->
+            <!-- Dentro de <section class="pf-content"> … -->
+            <article class="pf-panel" id="tab-perfil" hidden>
+                <div class="pf-sheet"> <!-- NUEVO: hoja blanca centrada -->
+                    <header class="pf-panel-head">
+                        <h1 class="pf-title">Editar Perfil</h1>
+                        <img id="pfAvatar" class="pf-avatar" src="../Images/perfil.svg" alt="" aria-hidden="true">
+                    </header>
+
+                    <form id="pfForm" class="pf-form" novalidate>
+                        <div class="pf-row">
+                            <label>Nombre
+                                <input type="text" name="nombre" autocomplete="name" />
+                            </label>
+                        </div>
+
+                        <div class="pf-row pf-cols-2">
+                            <label>Primer Apellido
+                                <input type="text" name="primer_apellido" />
+                            </label>
+                            <label>Segundo Apellido
+                                <input type="text" name="segundo_apellido" />
+                            </label>
+                        </div>
+
+                        <!-- FLAG verde dentro del input (como en tu mock) -->
+                        <div class="pf-row">
+                            <label class="pf-with-flag">Correo
+                                <input type="email" name="correo" autocomplete="email" />
+                                <span class="pf-flag ok" aria-label="Correo verificado"></span>
+                            </label>
+                        </div>
+
+                        <div class="pf-row">
+                            <label class="pf-with-flag">Contraseña
+                                <input type="password" name="__dummy_pwd" value="••••••••" disabled />
+                                <span class="pf-flag ok" aria-label="Protegido"></span>
+                            </label>
+                        </div>
+
+                        <div class="pf-row">
+                            <label>Negocio
+                                <input type="text" name="negocio" />
+                            </label>
+                        </div>
+
+                        <div class="pf-actions pf-actions-end">
+                            <button type="button" class="pf-btn ghost" id="pfCancel">Cancelar</button>
+                            <button type="submit" class="pf-btn primary" id="pfSave">Guardar</button>
+                        </div>
+                    </form>
+
+                    <hr class="pf-sep">
+
+                    <h2 class="pf-subtitle">Cambiar contraseña</h2>
+                    <form id="pfPwdForm" class="pf-form pf-form-tight" novalidate>
+                        <div class="pf-row">
+                            <label>Contraseña actual
+                                <input type="password" name="contrasena_actual" minlength="8" />
+                            </label>
+                        </div>
+                        <div class="pf-row">
+                            <label>Nueva contraseña
+                                <input type="password" name="contrasena_nueva" minlength="8" />
+                            </label>
+                        </div>
+                        <div class="pf-actions pf-actions-start">
+                            <button type="submit" class="pf-btn">Actualizar contraseña</button>
+                        </div>
+                    </form>
+                </div>
+            </article>
+
+
+            <!-- DIRECCIONES -->
+            <article class="pf-panel" id="tab-direcciones" hidden>
+                <header class="pf-panel-head">
+                    <h1>Direcciones</h1>
+                </header>
+
+                <div id="addrList" class="pf-card-list"></div>
+
+                <div class="pf-actions">
+                    <button id="addrNew" type="button" class="pf-btn primary">Agregar nueva dirección</button>
+                </div>
+
+                <!-- Modal/Drawer de dirección (placeholder sencillo) -->
+                <dialog id="addrDialog" class="pf-dialog">
+                    <form method="dialog" id="addrForm" class="pf-form">
+                        <h3>Nueva/Editar dirección</h3>
+                        <input type="hidden" name="id_direccion" />
+
+                        <div class="pf-row">
+                            <label>Dirección exacta
+                                <textarea name="direccion_exacta" rows="3" required></textarea>
+                            </label>
+                        </div>
+
+                        <div class="pf-row pf-cols-3">
+                            <label>Provincia
+                                <input name="provincia" maxlength="100" required />
+                            </label>
+                            <label>Cantón
+                                <input name="canton" maxlength="100" required />
+                            </label>
+                            <label>Distrito
+                                <input name="distrito" maxlength="100" required />
+                            </label>
+                        </div>
+
+                        <div class="pf-row pf-cols-2">
+                            <label>Código postal
+                                <input name="codigo_postal" type="number" min="0" />
+                            </label>
+                            <label class="pf-checkbox" style="margin-top: 26px;">
+                                <input type="checkbox" name="activa" />
+                                <span>Activa</span>
+                            </label>
+                        </div>
+
+                        <div class="pf-actions">
+                            <button class="pf-btn ghost" value="cancel" formnovalidate>Cancelar</button>
+                            <button class="pf-btn primary" value="save">Guardar</button>
+                        </div>
+                    </form>
+                </dialog>
+            </article>
+
+            <!-- PEDIDOS -->
+            <article class="pf-panel" id="tab-pedidos" hidden>
+                <header class="pf-panel-head">
+                    <h1>Mis pedidos</h1>
+                </header>
+                <div id="ordersList" class="pf-card-list"></div>
+            </article>
+
+            <!-- AYUDA -->
+            <article class="pf-panel" id="tab-ayuda" hidden>
+                <header class="pf-panel-head">
+                    <h1>Ayuda</h1>
+                </header>
+                <p>¿Necesitas soporte? Escríbenos por WhatsApp o correo.</p>
+            </article>
+
+            <!-- NOTIFICACIONES -->
+            <article class="pf-panel" id="tab-notificaciones" hidden>
+                <header class="pf-panel-head">
+                    <h1>Notificaciones</h1>
+                </header>
+                <p>Próximamente podrás gestionar tus preferencias.</p>
+            </article>
+
+        </section>
+    </main>
+
+    <!-- Toast mínimo reutilizable -->
+    <div id="pdToast" role="status" aria-live="polite"></div>
+
+    <!-- JS del sitio -->
+    <script src="../JS/auth.js" defer></script>
+    <script type="module" src="../JS/api.js"></script>
+    <script src="../JS/perfil.js" defer></script>
+</body>
+
+</html>

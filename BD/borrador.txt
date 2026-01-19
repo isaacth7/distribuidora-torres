@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  title: API Bolsas - Distribuidora
+  version: 1.0.0
+  description: >
+    API para catálogo de bolsas, subtipos y resolución de precios por estrategia
+    (por_kg, por_pack, por_unidad). El endpoint /api/bolsas/{id}/pricing resuelve
+    reglas en cascada: **id_bolsa > id_subtipo_bolsa > id_tipo_bolsa**.
+
+servers:
+  - url: http://localhost:3000
+    description: Local
+
+tags:
+  - name: Tipos
+  - name: Subtipos
+  - name: Bolsas
+  - name: Pricing
+  - name: Imágenes
+
+paths:
+  /api/tipos-bolsas:
+    get:
+      tags: [Tipos]
+      summary: Lista de tipos de bolsa
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TipoBolsa' }
+
+  /api/tipos-bolsas/{id}/subtipos:
+    get:
+      tags: [Subtipos]
+      summary: Lista de subtipos por tipo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del tipo
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/SubtipoBolsa' }
+        '404':
+          description: Tipo no encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/bolsas:
+    get:
+      tags: [Bolsas]
+      summary: Lista bolsas (SKU)
+      parameters:
+        - in: query
+          name: subtipo
+          required: false
+          description: Filtra por id_subtipo_bolsa
+          schema: { type: integer }
+        - in: query
+          name: page
+          required: false
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: pageSize
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Bolsa' }
+
+  /api/subtipos/{id}/imagenes:
+    get:
+      tags: [Imágenes]
+      summary: Imágenes asociadas a un subtipo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del subtipo
+          schema: { type: integer }
+        - in: query
+          name: pageSize
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 12, default: 6 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Imagen' }
+        '404':
+          description: Subtipo no encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/bolsas/{id}/pricing:
+    get:
+      tags: [Pricing]
+      summary: Resuelve estrategia y precio vigente para una bolsa (SKU)
+      description: >
+        **ID = id_bolsa (SKU)**.  
+        Busca reglas de pricing en cascada: `id_bolsa > id_subtipo_bolsa > id_tipo_bolsa`, respetando prioridad y vigencias.
+        Soporta `por_kg` (con o sin `es_peso_variable`), `por_pack` (lista de packs por SKU) y `por_unidad`.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+          description: ID de la **bolsa (SKU)**, _no_ el id del subtipo.
+          example: 123
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/PricingPorKg'
+                  - $ref: '#/components/schemas/PricingPorPack'
+                  - $ref: '#/components/schemas/PricingPorUnidad'
+              examples:
+                porKgNormal:
+                  summary: Por kg (normal)
+                  value:
+                    estrategia: por_kg
+                    moneda: CRC
+                    precio_por_kg: 1800
+                    es_peso_variable: false
+                porKgRollo:
+                  summary: Por kg (rollo con tope)
+                  value:
+                    estrategia: por_kg
+                    moneda: CRC
+                    precio_por_kg: 2200
+                    es_peso_variable: true
+                    peso_max_kg: 2.3
+                porPack:
+                  summary: Por pack (papel)
+                  value:
+                    estrategia: por_pack
+                    moneda: CRC
+                    packs:
+                      - { pack_qty: 24,  precio_por_pack: 3600 }
+                      - { pack_qty: 30,  precio_por_pack: 4350 }
+        '404':
+          description: Bolsa o regla no encontrada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  # Opcional: endpoint por subtipo (útil para pre-cargar en la UI antes de elegir tamaño)
+  /api/subtipos/{id}/pricing:
+    get:
+      tags: [Pricing]
+      summary: Precio vigente por subtipo (fallback a tipo)
+      description: >
+        Devuelve la regla ganadora entre subtipo y tipo para `por_kg`/`por_unidad`.  
+        Para `por_pack` se recomienda resolver por SKU específico.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del subtipo
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/PricingPorKg'
+                  - $ref: '#/components/schemas/PricingPorUnidad'
+        '404':
+          description: Subtipo sin regla
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+components:
+  schemas:
+    TipoBolsa:
+      type: object
+      properties:
+        id_tipo_bolsa: { type: integer }
+        nombre_bolsa:  { type: string }
+
+    SubtipoBolsa:
+      type: object
+      properties:
+        id_subtipo_bolsa: { type: integer }
+        id_tipo_bolsa:    { type: integer }
+        nombre_subtipo_bolsa: { type: string }
+        descripcion_subtipo:  { type: string, nullable: true }
+
+    Bolsa:
+      type: object
+      properties:
+        id_bolsa:        { type: integer }
+        id_tipo_bolsa:   { type: integer }
+        id_subtipo_bolsa:{ type: integer, nullable: true }
+        ancho:           { type: number, format: float, nullable: true }
+        alto:            { type: number, format: float, nullable: true }
+        descripcion_bolsa: { type: string, nullable: true }
+        es_peso_variable:  { type: boolean, default: false }
+
+    Imagen:
+      type: object
+      properties:
+        url_imagen: { type: string, format: uri }
+
+    # --- Pricing ---
+    PricingBase:
+      type: object
+      required: [estrategia, moneda]
+      properties:
+        estrategia:
+          type: string
+          enum: [por_kg, por_pack, por_unidad]
+        moneda:
+          type: string
+          example: CRC
+
+    PricingPorKg:
+      allOf:
+        - $ref: '#/components/schemas/PricingBase'
+        - type: object
+          required: [precio_por_kg, es_peso_variable]
+          properties:
+            precio_por_kg:
+              type: number
+              format: float
+              example: 1800
+            es_peso_variable:
+              type: boolean
+              description: true para rollos; false para ventas por kg normales
+              example: false
+            peso_max_kg:
+              type: number
+              format: float
+              nullable: true
+              description: Tope por rollo (solo si es_peso_variable=true)
+              example: 2.3
+
+    PricingPorPack:
+      allOf:
+        - $ref: '#/components/schemas/PricingBase'
+        - type: object
+          required: [packs]
+          properties:
+            packs:
+              type: array
+              minItems: 1
+              items: { $ref: '#/components/schemas/PackOption' }
+
+    PackOption:
+      type: object
+      required: [pack_qty, precio_por_pack]
+      properties:
+        pack_qty:
+          type: integer
+          example: 24
+        precio_por_pack:
+          type: number
+          format: float
+          example: 3600
+
+    PricingPorUnidad:
+      allOf:
+        - $ref: '#/components/schemas/PricingBase'
+        - type: object
+          required: [precio_por_unidad]
+          properties:
+            precio_por_unidad:
+              type: number
+              format: float
+              example: 75
+
+    # --- Paginación / Comunes ---
+    Paged:
+      type: object
+      properties:
+        page: { type: integer, example: 1 }
+        pageSize: { type: integer, example: 50 }
+        total: { type: integer, example: 123 }
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: sin regla de precio

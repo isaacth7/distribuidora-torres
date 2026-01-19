@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribuidora Torres Producto</title>
+
+    <link rel="stylesheet" href="../CSS/Producto.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- BARRA DE PROMOCION -->
+    <div class="barra_promo">
+        <div class="texto_promo">Envío Gratis por compras superiores a 20.000 colones</div>
+        <img class="flecha_promo" alt="icono_flecha" src="../Images/arrow-right.svg">
+    </div>
+
+    <!-- MENU Y BUSQUEDA -->
+    <div class="Menu">
+        <div class="barra_navegacion_superior">
+            <div class="contenedor_logo">
+                <a href="../HTML/Inicio.html" class="brand_link" aria-label="Ir al inicio">
+                    <img class="logo_empresa" src="../Images/logo_empresa.png" alt="Distribuidora Torres">
+                </a>
+            </div>
+
+            <!-- Barra de búsqueda accesible (ANTES era un div .barra_navegacion) -->
+            <form class="barra_navegacion" role="search" aria-label="Buscar productos" action="#" method="get">
+                <label class="sr-only" for="q">Buscar</label>
+                <img class="logo_buscar" alt="" src="../Images/buscar.svg" aria-hidden="true">
+                <input id="q" name="q" class="input_buscar" type="search" placeholder="Buscar aquí..."
+                    autocomplete="off">
+                <button class="btn_buscar" type="submit" aria-label="Buscar"></button>
+            </form>
+
+            <div class="contenedor_perfil">
+                <!-- Botón hamburguesa (nuevo) -->
+                <button class="btn_hamburger" aria-label="Abrir menú" aria-controls="menuCategorias"
+                    aria-expanded="false">
+                    <span class="sr-only">Abrir menú</span>
+                </button>
+
+                <button id="btnUser" class="icon_btn" aria-label="Mi cuenta" type="button">
+                    <img class="logo_perfil" src="../Images/perfil.svg" alt="">
+                    <!-- opcional: badge dinámico de login -->
+                    <span id="userBadge" class="badge" hidden>•</span>
+                </button>
+
+
+                <a href="/carrito" class="icon_btn" aria-label="Ver carrito">
+                    <img class="logo_perfil" src="../Images/bolsa.svg" alt="">
+                    <span class="badge" id="cartBadge" aria-hidden="true">3</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- NAV de categorías: reemplaza tu .barra_menu original -->
+        <nav id="menuCategorias" class="barra_menu" aria-label="Categorías">
+            <button class="btn_close_menu" aria-label="Cerrar menú"></button>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=2">Bolsas Basura</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=1">Bolsa Agarradera</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=6">Bolsa Rollo</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=4">Bolsa Papel</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Transparente</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=3">Polipropileno</a></div>
+            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Blanca</a></div>
+        </nav>
+        <!-- Overlay para el off-canvas (nuevo) -->
+        <div class="menu_overlay" hidden></div>
+    </div>
+
+    <main class="pd-wrapper">
+        <!-- Columna izquierda: galería vertical -->
+        <section class="pd-col-left">
+            <figure class="pd-photo"><img src="../Images/imagenejemplo.jpeg" alt="Bolsa vista principal"></figure>
+            <figure class="pd-photo"><img src="../Images/Carrusel-3.jpg" alt="Uso de la bolsa"></figure>
+            <figure class="pd-photo"><img src="../Images/imagen_encabezado.jpeg" alt="Detalle de la bolsa"></figure>
+        </section>
+
+        <!-- Columna derecha: especificaciones -->
+        <section class="pd-col-right">
+            <h1 class="pd-title">Bolsa Agarradera</h1>
+
+            <div class="pd-field">
+                <span class="pd-label">Subtipo:</span>
+                <!-- antes: <div class="pd-control"><select class="pd-select"> -->
+                <div class="pd-control">
+                    <select id="selSubtipo" class="pd-select"></select>
+                </div>
+
+            </div>
+
+            <div class="pd-field">
+                <span id="priceLabel" class="pd-label">Precio por kilo:</span>
+                <span class="pd-value" id="lblPrice">0₡</span>
+            </div>
+
+            <div class="pd-field">
+                <label class="pd-label" for="selTam">Tamaño:</label>
+                <div class="pd-control">
+                    <select id="selTam" class="pd-select">
+                        <option>—</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pd-field">
+                <span id="qtyLabel" class="pd-label">Cantidad (kilos):</span>
+                <div class="pd-stepper" aria-label="Cantidad">
+                    <button type="button" class="pd-stepper-btn" aria-label="Restar">−</button>
+                    <!-- input “invisible” a nivel de estilos; se verá como el 0 del diseño -->
+                    <input id="pdQtyInput" class="pd-stepper-value" type="number" inputmode="decimal" step="0.25"
+                        min="0.25" value="0.25" aria-label="Cantidad" />
+                    <button type="button" class="pd-stepper-btn" aria-label="Sumar">+</button>
+                </div>
+            </div>
+
+
+            <div class="pd-field" id="packRow" style="display:none">
+                <label id="lblPack" class="pd-label" for="selPack">Presentación:</label>
+                <div class="pd-control">
+                    <select id="selPack" class="pd-select"></select>
+                </div>
+            </div>
+
+            <div id="pdNote" class="pd-note" style="margin:.5rem 0 0;color:#666;"></div>
+
+
+            <div class="pd-field">
+                <span class="pd-label">Subtotal:</span>
+                <strong class="pd-subtotal">0₡</strong>
+            </div>
+
+            <h3 class="pd-subtitle">Descripción:</h3>
+            <p class="pd-desc">
+                La bolsa de agarradera tipo biodegradable mediana es la bolsa perfecta para cargar objetos
+                ni muy pequeños ni muy grandes, es una bolsa resistente, mide 10 pulgadas de ancho y 20 de
+                largo, y cuenta con la ventaja de ser una bolsa amigable con el ambiente.
+            </p>
+
+            <button class="pd-add-btn" type="button">Agregar a la Bolsa</button>
+
+            <ul class="pd-benefits" aria-label="Beneficios de la tienda">
+                <li class="benefit">
+                    <span class="b-icon" aria-hidden="true">
+                        <img src="../Images/icono_envio.svg" alt="">
+                    </span>
+                    <div class="b-copy">
+                        <h4>Envío Gratis</h4>
+                        <p>Por compras superiores a 20.000₡</p>
+                    </div>
+                </li>
+
+                <li class="benefit">
+                    <span class="b-icon" aria-hidden="true">
+                        <img src="../Images/icono_servicio.svg" alt="">
+                    </span>
+                    <div class="b-copy">
+                        <h4>Respuesta Rápida</h4>
+                        <p>Te atenderemos en el menor tiempo posible</p>
+                    </div>
+                </li>
+
+                <li class="benefit">
+                    <span class="b-icon" aria-hidden="true">
+                        <img src="../Images/icono_amigables.svg" alt="">
+                    </span>
+                    <div class="b-copy">
+                        <h4>Eco-Friendly</h4>
+                        <p>Todos nuestros productos son amigables con el ambiente.</p>
+                    </div>
+                </li>
+            </ul>
+
+
+        </section>
+    </main>
+
+    <section class="pd-reco-band" aria-labelledby="recoTitle">
+        <div class="reco-inner">
+            <h3 id="recoTitle">Productos Recomendados</h3>
+
+            <div class="reco-grid">
+                <a class="reco-card" href="#">
+                    <figure>
+                        <img src="../Images/260_1.jpg" alt="Bolsas de Polipropileno">
+                        <figcaption>Bolsas de Polipropileno</figcaption>
+                    </figure>
+                </a>
+
+                <a class="reco-card" href="#">
+                    <figure>
+                        <img src="../Images/Bolsa-Rollo.jpg" alt="Bolsas en Rollo">
+                        <figcaption>Bolsas en Rollo</figcaption>
+                    </figure>
+                </a>
+
+                <a class="reco-card" href="#">
+                    <figure>
+                        <img src="../Images/bolsaspapel.webp" alt="Bolsas de Papel">
+                        <figcaption>Bolsas de Papel</figcaption>
+                    </figure>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Auth -->
+    <div id="authModal" class="auth-modal" aria-hidden="true">
+        <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+            <button class="auth-close" id="authClose" aria-label="Cerrar">&times;</button>
+
+            <h2 id="authTitle">Mi cuenta</h2>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login" type="button">Iniciar sesión</button>
+                <button class="auth-tab" data-tab="register" type="button">Crear cuenta</button>
+            </div>
+
+            <!-- LOGIN -->
+            <form id="loginForm" class="auth-form" data-tab-content="login" autocomplete="on">
+                <label>Email
+                    <input type="email" name="correo" required />
+                </label>
+                <label>Contraseña
+                    <input type="password" name="contrasena" minlength="8" required />
+                </label>
+                <button type="submit" class="auth-primary">Entrar</button>
+                <p class="auth-footnote">
+                    ¿No tienes cuenta? <a href="#" data-switch="register">Crear una</a>
+                </p>
+            </form>
+
+            <!-- REGISTRO -->
+            <form id="registerForm" class="auth-form hidden" data-tab-content="register" autocomplete="on">
+                <label>Email
+                    <input type="email" name="correo" required />
+                </label>
+                <label>Contraseña
+                    <input type="password" name="contrasena" minlength="8" required />
+                </label>
+                <details class="auth-optional">
+                    <summary>Datos opcionales</summary>
+                    <label>Nombre <input type="text" name="nombre" /></label>
+                    <label>Primer apellido <input type="text" name="primer_apellido" /></label>
+                    <label>Segundo apellido <input type="text" name="segundo_apellido" /></label>
+                </details>
+                <button type="submit" class="auth-primary">Crear cuenta</button>
+                <p class="auth-footnote">
+                    ¿Ya tienes cuenta? <a href="#" data-switch="login">Iniciar sesión</a>
+                </p>
+            </form>
+
+            <!-- Feedback -->
+            <div id="authMsg" class="auth-msg" role="alert" aria-live="polite"></div>
+
+            <!-- Estado logueado (reemplazo) -->
+            <div id="loggedPanel" class="auth-logged hidden">
+                <div class="auth-user">
+                    <div class="avatar" id="avatarCircle" aria-hidden="true">U</div>
+                    <div class="info">
+                        <p class="hello">¡Hola, <span id="helloName"></span>!</p>
+                        <p class="email" id="helloEmail"></p>
+                    </div>
+                </div>
+
+                <div class="auth-grid">
+                    <a href="/HTML/Perfil.html#pedidos" class="auth-card">
+                        <span class="auth-card-title">Mis órdenes</span>
+                        <span class="auth-card-sub">Compras y estados</span>
+                    </a>
+                    <a href="/HTML/Perfil.html#direcciones" class="auth-card">
+                        <span class="auth-card-title">Mis direcciones</span>
+                        <span class="auth-card-sub">Entrega y facturación</span>
+                    </a>
+                    <a href="/HTML/Perfil.html" class="auth-card">
+                        <span class="auth-card-title">Mi perfil</span>
+                        <span class="auth-card-sub">Datos personales</span>
+                    </a>
+                    <!-- Tarjeta Admin solo si el rol es admin (se muestra vía JS) -->
+                    <a href="/HTML/Admin.html" id="adminCard" class="auth-card hidden">
+                        <span class="auth-card-title">Admin</span>
+                        <span class="auth-card-sub">Panel de gestión</span>
+                    </a>
+                </div>
+
+                <button id="btnLogout" class="auth-danger wide" type="button">Cerrar sesión</button>
+                <div id="logoutConfirm" class="logout-confirm hidden" role="alertdialog" aria-live="polite">
+                    <p>¿Cerrar sesión ahora?</p>
+                    <div class="actions">
+                        <button id="confirmLogout" class="auth-danger">Sí, cerrar</button>
+                        <button id="cancelLogout" class="auth-primary ghost">Cancelar</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="auth-backdrop"></div>
+    </div>
+
+    <!-- Mini Cart Drawer -->
+    <div id="miniCartOverlay" class="mc-overlay" hidden></div>
+    <aside id="miniCart" class="mc-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="mcTitle">
+        <header class="mc-header">
+            <h2 id="mcTitle">Tu carrito</h2>
+            <button class="mc-close" aria-label="Cerrar">&times;</button>
+        </header>
+
+        <div class="mc-content">
+            <ul id="mcList" class="mc-list"></ul>
+            <div id="mcEmpty" class="mc-empty" hidden>Tu carrito está vacío.</div>
+        </div>
+
+        <footer class="mc-footer">
+            <div class="mc-subtotal">Subtotal: <strong id="mcSubtotal">₡ 0,00</strong></div>
+            <div class="mc-actions">
+                <button id="mcClear" class="mc-btn-outlined" type="button">Vaciar</button>
+                <a href="/carrito" class="mc-btn-outlined">Ir al carrito</a>
+
+                <!-- Botón para abrir el checkout (pónlo donde tengas el carrito) -->
+                <button id="btnCheckout" class="mc-btn-primary">Finalizar compra</button>
+
+                <!-- ===== CHECKOUT MODAL ===== -->
+                <dialog id="checkoutDialog" class="ck-dialog">
+                    <form method="dialog" class="ck-card" id="checkoutForm" aria-label="Checkout">
+
+                        <div class="ck-grid">
+                            <!-- ============ LEFT: PAYMENT ============ -->
+                            <section class="ck-left">
+                                <h2 class="ck-title">Pago</h2>
+                                <hr class="ck-sep" />
+
+                                <!-- Banner si hay rollos -->
+                                <div id="rolloNotice" class="ck-banner" hidden>
+                                    Esta orden incluye rollos (peso variable). El total mostrado es <b>estimado.</b>
+                                    Te notificaremos el precio final después de pesar los rollos, y seguidamente puedes 
+                                    completar el pago. Nunca vas a pagar más del precio total estimado.
+                                </div>
+
+                                <!-- Delivery -->
+                                <div class="ck-block">
+                                    <label class="ck-label">Forma de entrega</label>
+                                    <div class="ck-radio-row">
+                                        <label class="ck-radio">
+                                            <input type="radio" name="delivery_method" value="retiro" checked>
+                                            <span>Retiro en tienda</span>
+                                        </label>
+                                        <label class="ck-radio">
+                                            <input type="radio" name="delivery_method" value="envio">
+                                            <span>Envío</span>
+                                        </label>
+                                        <label class="ck-radio">
+                                            <input type="radio" name="delivery_method" value="ruta">
+                                            <span>Entrega en ruta</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="ck-field" id="addressWrap" hidden>
+                                        <label for="addressSelect" class="ck-sublabel">Dirección de envío</label>
+                                        <select id="addressSelect" class="ck-input"></select>
+                                        <div class="ck-help">
+                                            <a href="../HTML/Perfil.html#direcciones" target="_blank"
+                                                rel="noopener">Agregar o editar direcciones</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pay with -->
+                                <div class="ck-block">
+                                    <label class="ck-label">Método de pago:</label>
+                                    <div class="ck-radio-row">
+                                        <label class="ck-radio">
+                                            <input type="radio" name="payment_method" value="efectivo" checked>
+                                            <span>Efectivo</span>
+                                        </label>
+                                        <label class="ck-radio">
+                                            <input type="radio" name="payment_method" value="sinpe">
+                                            <span>SINPE</span>
+                                        </label>
+                                        <label class="ck-radio ck-disabled">
+                                            <input type="radio" name="payment_method" value="tarjeta" disabled>
+                                            <span>Tarjeta</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Card fields (placeholder, deshabilitado por ahora) -->
+                                <div class="ck-block ck-card-fields" aria-disabled="true" id="cardWrap">
+                                    <label class="ck-sublabel">Número de tarjeta</label>
+                                    <input class="ck-input" type="text" inputmode="numeric"
+                                        placeholder="1234 5678 9101 1121" disabled>
+
+                                    <div class="ck-row">
+                                        <div class="ck-col">
+                                            <label class="ck-sublabel">Fecha de expiración</label>
+                                            <input class="ck-input" type="text" placeholder="MM/YY" disabled>
+                                        </div>
+                                        <div class="ck-col">
+                                            <label class="ck-sublabel">CVV</label>
+                                            <input class="ck-input" type="text" placeholder="123" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SINPE upload (solo si NO hay rollos y eligen sinpe) -->
+                                <div class="ck-block" id="sinpeWrap" hidden>
+                                    <p class="ck-hint">Transferir al <strong>SINPE 8XX-XXXX-XXXX</strong> y subir
+                                        comprobante </p>
+                                    <input type="file" id="sinpeReceipt" class="ck-input"
+                                        accept="image/*,application/pdf">
+                                </div>
+
+                                <!-- Texto cuando hay rollos (pago pendiente) -->
+                                <div class="ck-block" id="pendingWrap" hidden>
+                                    <p class="ck-hint">Te notificaremos el precio final después de pesar los rollos.
+                                        Seguidamente puedes completar el pago.</p>
+                                </div>
+
+                                <!-- Primary action -->
+                                <button type="button" class="ck-btn-primary" id="btnConfirm">
+                                    <span id="btnConfirmLabel">Confirmar pedido</span>
+                                </button>
+
+                                <p class="ck-privacy">
+                                    Tus datos personales serán utilizados para procesar tu orden.
+                                </p>
+                            </section>
+
+                            <!-- ============ RIGHT: ORDER SUMMARY ============ -->
+                            <aside class="ck-right">
+                                <h3 class="ck-title-sm">Resumen de la Orden</h3>
+
+                                <div id="ckCartList" class="ck-list"><!-- render items --></div>
+
+                                <hr class="ck-sep" />
+
+                                <div class="ck-coupon">
+                                    <input type="text" class="ck-input" placeholder="Gift or discount code" disabled>
+                                    <button type="button" class="ck-btn-muted" disabled>Aplicar</button>
+                                </div>
+
+                                <div class="ck-totals">
+                                    <div class="ck-line"><span>Subtotal</span><strong id="ckSubtotal">₡0</strong></div>
+                                    <div class="ck-line"><span>Envío</span><strong id="ckShipping">₡0</strong></div>
+                                    <hr class="ck-sep thin" />
+                                    <div class="ck-line total"><span>Total</span><strong id="ckTotal">₡0</strong></div>
+                                    <div class="ck-tax-note">Incluyendo impuestos.</div>
+                                </div>
+                            </aside>
+                        </div>
+
+                        <!-- Close (X) -->
+                        <button type="button" class="ck-close" id="ckClose" aria-label="Close">×</button>
+                    </form>
+                </dialog>
+            </div>
+        </footer>
+    </aside>
+
+    <!-- incluye CSS y JS del auth -->
+    <link rel="stylesheet" href="../CSS/auth.css">
+
+    <script src="../JS/header.js" defer></script>
+    <script src="../JS/auth.js" defer></script>
+    <script type="module" src="../JS/api.js"></script>
+    <script type="module" src="../JS/product-details.js"></script>
+    <script src="../JS/cart.js" defer></script>
+    <script src="../JS/checkout.js" defer></script>
+
+
+</body>
+
+</html>
