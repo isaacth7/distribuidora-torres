@@ -52,9 +52,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// ✅ Express 5: NO usar '*' aquí, usar '/*' (o regex)
-app.options('/*', cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 /* ---------- Static uploads ---------- */
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
