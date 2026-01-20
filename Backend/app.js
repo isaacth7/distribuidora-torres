@@ -14,29 +14,50 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ---------- CORS ---------- */
-const raw = process.env.FRONTEND_ORIGIN
-  || 'http://127.0.0.1:5500,http://localhost:5500,http://localhost:5173';
+/* ---------- CORS ---------- */
+const raw =
+  process.env.FRONTEND_ORIGIN ||
+  'http://127.0.0.1:5500,http://localhost:5500,http://localhost:5173,https://nonprod-distribuidoratorres.netlify.app';
 
 const FROM_ENV = raw.split(',').map(s => s.trim()).filter(Boolean);
+
+// OJO: PORT debe estar definido antes (const PORT = process.env.PORT || 3000)
 const SWAGGER_ORIGIN = `http://localhost:${PORT}`;
-const ALLOWED_ORIGINS = new Set([...FROM_ENV, SWAGGER_ORIGIN, `http://localhost:${PORT}`]);
+
+// permitimos también https://<loquesea>.netlify.app (si querés flexibilidad)
+const isNetlify = (origin) => /^https:\/\/.*\.netlify\.app$/.test(origin);
+
+const ALLOWED_ORIGINS = new Set([
+  ...FROM_ENV,
+  SWAGGER_ORIGIN,
+  `http://localhost:${PORT}`,
+]);
 
 const corsOptions = {
   origin(origin, cb) {
     if (!origin) return cb(null, true);
-    if (ALLOWED_ORIGINS.has(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+
+    if (
+      ALLOWED_ORIGINS.has(origin) ||
+      /^http:\/\/localhost:\d+$/.test(origin) ||
+      isNetlify(origin)
+    ) {
       return cb(null, true);
     }
+
     console.warn('[CORS] Origin no permitido:', origin);
     return cb(null, false);
   },
+  // Si NO usas cookies, puedes dejarlo true o cambiar a false.
+  // No rompe tu caso con Bearer, pero no es necesario.
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 204,
 };
 
-app.use(cors(corsOptions)); // <-- solo una vez
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 /* ---------- Static uploads ---------- */
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
