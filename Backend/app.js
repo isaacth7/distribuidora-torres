@@ -14,23 +14,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ---------- CORS ---------- */
-/**
- * En Render poné FRONTEND_ORIGIN con tu dominio Netlify exacto
- * Ej: https://nonprod-distribuidoratorres.netlify.app
- * También acepta una lista separada por comas.
- */
 const raw =
   process.env.FRONTEND_ORIGIN ||
   'http://127.0.0.1:5500,http://localhost:5500,http://localhost:5173';
 
-const FROM_ENV = raw
-  .split(',')
-  .map((s) => s.trim())
-  .filter(Boolean);
+const FROM_ENV = raw.split(',').map(s => s.trim()).filter(Boolean);
 
 const SWAGGER_ORIGIN = `http://localhost:${PORT}`;
-
-// permite cualquier subdominio de netlify (non-prod)
 const isNetlify = (origin) => /^https:\/\/.*\.netlify\.app$/.test(origin);
 
 const ALLOWED_ORIGINS = new Set([
@@ -41,10 +31,9 @@ const ALLOWED_ORIGINS = new Set([
 
 const corsOptions = {
   origin(origin, cb) {
-    // requests tipo curl/postman o same-origin sin header Origin
+    // requests server-to-server o herramientas sin Origin (curl/postman)
     if (!origin) return cb(null, true);
 
-    // allow exact matches + localhost dinámico + netlify
     if (
       ALLOWED_ORIGINS.has(origin) ||
       /^http:\/\/localhost:\d+$/.test(origin) ||
@@ -56,14 +45,16 @@ const corsOptions = {
     console.warn('[CORS] Origin no permitido:', origin);
     return cb(null, false);
   },
-  credentials: true,
+  credentials: true, // si no usas cookies, lo puedes dejar igual; no rompe Bearer
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+
+// ✅ Express 5: NO usar '*' aquí, usar '/*' (o regex)
+app.options('/*', cors(corsOptions));
 
 /* ---------- Static uploads ---------- */
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
@@ -84,7 +75,6 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: 'Demasiados intentos de login, intenta más tarde' },
 });
-
 const checkoutLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   max: 20,
@@ -92,7 +82,6 @@ const checkoutLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: 'Demasiadas solicitudes de checkout' },
 });
-
 app.use('/api/auth/login', loginLimiter);
 app.use('/api/orders/checkout', checkoutLimiter);
 
@@ -138,15 +127,14 @@ app.use('/api', require('./routes/admin_users'));
 app.use('/api', require('./routes/pricing'));
 
 /* ---------- 404 & errores ---------- */
-app.use((_req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
+app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 app.use(require('./middlewares/errorHandler'));
 
 /* ---------- Start ---------- */
 app.listen(PORT, () => {
-  console.log(`✅ Backend escuchando en puerto ${PORT}`);
+  console.log(`✅ Backend escuchando en http://localhost:${PORT}`);
   console.log(
     '   CORS Origins permitidos:',
-    [...ALLOWED_ORIGINS].join(' | '),
-    '| + *.netlify.app'
+    Array.from(ALLOWED_ORIGINS).join(' | ')
   );
 });
