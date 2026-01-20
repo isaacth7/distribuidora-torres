@@ -14,15 +14,23 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ---------- CORS ---------- */
-/* ---------- CORS ---------- */
+/**
+ * En Render poné FRONTEND_ORIGIN con tu dominio Netlify exacto
+ * Ej: https://nonprod-distribuidoratorres.netlify.app
+ * También acepta una lista separada por comas.
+ */
 const raw =
   process.env.FRONTEND_ORIGIN ||
   'http://127.0.0.1:5500,http://localhost:5500,http://localhost:5173';
 
-const FROM_ENV = raw.split(',').map(s => s.trim()).filter(Boolean);
+const FROM_ENV = raw
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 const SWAGGER_ORIGIN = `http://localhost:${PORT}`;
 
+// permite cualquier subdominio de netlify (non-prod)
 const isNetlify = (origin) => /^https:\/\/.*\.netlify\.app$/.test(origin);
 
 const ALLOWED_ORIGINS = new Set([
@@ -33,8 +41,10 @@ const ALLOWED_ORIGINS = new Set([
 
 const corsOptions = {
   origin(origin, cb) {
+    // requests tipo curl/postman o same-origin sin header Origin
     if (!origin) return cb(null, true);
 
+    // allow exact matches + localhost dinámico + netlify
     if (
       ALLOWED_ORIGINS.has(origin) ||
       /^http:\/\/localhost:\d+$/.test(origin) ||
@@ -52,7 +62,6 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
@@ -69,26 +78,38 @@ app.use(express.json({ limit: '1mb' }));
 
 /* ---------- Rate limits ---------- */
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, max: 10,
-  standardHeaders: true, legacyHeaders: false,
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { error: 'Demasiados intentos de login, intenta más tarde' },
 });
+
 const checkoutLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, max: 20,
-  standardHeaders: true, legacyHeaders: false,
+  windowMs: 5 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { error: 'Demasiadas solicitudes de checkout' },
 });
+
 app.use('/api/auth/login', loginLimiter);
-app.use('/api/orders/checkout', checkoutLimiter); // <-- ruta correcta
+app.use('/api/orders/checkout', checkoutLimiter);
 
 /* ---------- Swagger ---------- */
 const swaggerDoc = YAML.load(path.join(__dirname, 'docs', 'openapi.yaml'));
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc, {
-  swaggerOptions: { persistAuthorization: true },
-}));
+app.use(
+  '/api/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDoc, {
+    swaggerOptions: { persistAuthorization: true },
+  })
+);
 
 /* ---------- Utils ---------- */
-app.get('/api/health', (_req, res) => res.json({ ok: true, message: 'Servidor vivo' }));
+app.get('/api/health', (_req, res) =>
+  res.json({ ok: true, message: 'Servidor vivo' })
+);
 
 app.get('/api/test-db', async (_req, res) => {
   try {
@@ -107,7 +128,7 @@ app.use('/api', require('./routes/catalogo'));
 app.use('/api', require('./routes/cart'));
 app.use('/api', require('./routes/direcciones'));
 app.use('/api', require('./routes/catalogos_aux'));
-app.use('/api', require('./routes/orders'));          // <-- este archivo
+app.use('/api', require('./routes/orders'));
 app.use('/api', require('./routes/orders_admin'));
 app.use('/api', require('./routes/estados'));
 app.use('/api', require('./routes/admin_catalogo'));
@@ -117,11 +138,15 @@ app.use('/api', require('./routes/admin_users'));
 app.use('/api', require('./routes/pricing'));
 
 /* ---------- 404 & errores ---------- */
-app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
+app.use((_req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 app.use(require('./middlewares/errorHandler'));
 
 /* ---------- Start ---------- */
 app.listen(PORT, () => {
-  console.log(`✅ Backend escuchando en http://localhost:${PORT}`);
-  console.log('   CORS Origins permitidos:', Array.from(ALLOWED_ORIGINS).join(' | '));
+  console.log(`✅ Backend escuchando en puerto ${PORT}`);
+  console.log(
+    '   CORS Origins permitidos:',
+    [...ALLOWED_ORIGINS].join(' | '),
+    '| + *.netlify.app'
+  );
 });
