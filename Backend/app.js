@@ -17,14 +17,12 @@ const PORT = process.env.PORT || 3000;
 /* ---------- CORS ---------- */
 const raw =
   process.env.FRONTEND_ORIGIN ||
-  'http://127.0.0.1:5500,http://localhost:5500,http://localhost:5173,https://nonprod-distribuidoratorres.netlify.app';
+  'http://127.0.0.1:5500,http://localhost:5500,http://localhost:5173';
 
 const FROM_ENV = raw.split(',').map(s => s.trim()).filter(Boolean);
 
-// OJO: PORT debe estar definido antes (const PORT = process.env.PORT || 3000)
 const SWAGGER_ORIGIN = `http://localhost:${PORT}`;
 
-// permitimos también https://<loquesea>.netlify.app (si querés flexibilidad)
 const isNetlify = (origin) => /^https:\/\/.*\.netlify\.app$/.test(origin);
 
 const ALLOWED_ORIGINS = new Set([
@@ -48,13 +46,12 @@ const corsOptions = {
     console.warn('[CORS] Origin no permitido:', origin);
     return cb(null, false);
   },
-  // Si NO usas cookies, puedes dejarlo true o cambiar a false.
-  // No rompe tu caso con Bearer, pero no es necesario.
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 204,
 };
+
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
