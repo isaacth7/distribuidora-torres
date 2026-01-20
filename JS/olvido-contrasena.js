@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (goLogin) {
     goLogin.addEventListener("click", () => {
-      window.location.href = "Inicio.html"; // ajustá si aplica
+      window.location.href = "index.html"; // ajustá si aplica
     });
   }
 

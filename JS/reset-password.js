@@ -77,7 +77,7 @@ pass1.addEventListener("input", () => { clearStatus(); updateUI(); });
 pass2.addEventListener("input", () => { clearStatus(); updateUI(); });
 
 goLogin.addEventListener("click", () => {
-  window.location.href = "Inicio.html";
+  window.location.href = "index.html";
 });
 
 if (!token) {

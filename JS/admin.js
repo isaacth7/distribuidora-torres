@@ -48,7 +48,7 @@
     });
     $('#adLogout')?.addEventListener('click', () => {
         try { localStorage.removeItem('token'); } catch { } // o tu método de logout
-        location.href = '../HTML/Inicio.html';
+        location.href = '../HTML/index.html';
     });
 
     // =======================

@@ -104,7 +104,7 @@ async function apiFetchPublic(path, {method='GET', body, headers={}, auth=false}
 
     // Si está en Perfil y no autorizado, mandalo al inicio (opcional)
     if (location.pathname.toLowerCase().includes('perfil')) {
-      try { location.replace('../HTML/Inicio.html'); } catch {}
+      try { location.replace('../HTML/index.html'); } catch {}
     }
   }
 
