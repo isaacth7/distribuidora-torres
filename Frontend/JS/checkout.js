@@ -9,42 +9,59 @@
   const $$ = s => Array.from(document.querySelectorAll(s));
   const fmtCRC = n => `₡ ${Number(n || 0).toLocaleString('es-CR')}`;
 
+  function safeGet(store, key) {
+    try { return store.getItem(key); } catch { return null; }
+  }
+  function safeKeys(store) {
+    try { return Object.keys(store); } catch { return []; }
+  }
+
   function readCookie(name) {
-    const parts = document.cookie.split(';');
-    for (const p of parts) {
-      const [k, ...rest] = p.trim().split('=');
-      if (k === name) return decodeURIComponent(rest.join('='));
-    }
+    try {
+      const parts = document.cookie.split(';');
+      for (const p of parts) {
+        const [k, ...rest] = p.trim().split('=');
+        if (k === name) return decodeURIComponent(rest.join('='));
+      }
+    } catch { }
     return null;
   }
+
   function sniffJWTFromStorage() {
-    for (const store of [localStorage, sessionStorage]) {
-      for (let i = 0; i < store.length; i++) {
-        const val = store.getItem(store.key(i)) || '';
+    const stores = [];
+    try { stores.push(localStorage); } catch { }
+    try { stores.push(sessionStorage); } catch { }
+
+    for (const store of stores) {
+      const keys = safeKeys(store);
+      for (const k of keys) {
+        const val = safeGet(store, k) || '';
         if (typeof val === 'string' && val.split('.').length === 3 && val.length > 60) return val;
       }
     }
     return '';
   }
+
   function getToken() {
     return (
-      localStorage.getItem('token') ||
-      localStorage.getItem('jwt') ||
-      localStorage.getItem('access_token') ||
-      sessionStorage.getItem('token') ||
-      sessionStorage.getItem('jwt') ||
+      safeGet(localStorage, 'token') ||
+      safeGet(localStorage, 'jwt') ||
+      safeGet(localStorage, 'access_token') ||
+      safeGet(sessionStorage, 'token') ||
+      safeGet(sessionStorage, 'jwt') ||
       readCookie('token') ||
       readCookie('access_token') ||
       sniffJWTFromStorage() ||
       ''
     );
   }
+
   async function fetchAuth(path, options = {}) {
     const token = getToken();
     const headers = new Headers(options.headers || {});
     headers.set('Accept', 'application/json');
     if (token) headers.set('Authorization', `Bearer ${token}`);
-    const res = await fetch(`${API_BASE}${path}`, { credentials: 'include', ...options, headers });
+    const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
     if (res.status === 401) return { __unauthorized: true };
     return res;
   }
