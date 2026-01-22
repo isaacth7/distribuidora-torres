@@ -44,17 +44,21 @@
 
   function getToken() {
     return (
-      safeGet(localStorage, 'token') ||
-      safeGet(localStorage, 'jwt') ||
-      safeGet(localStorage, 'access_token') ||
-      safeGet(sessionStorage, 'token') ||
-      safeGet(sessionStorage, 'jwt') ||
+      localStorage.getItem('dt_token') ||
+      localStorage.getItem('token') ||
+      localStorage.getItem('jwt') ||
+      localStorage.getItem('access_token') ||
+      sessionStorage.getItem('dt_token') ||
+      sessionStorage.getItem('token') ||
+      sessionStorage.getItem('jwt') ||
+      readCookie('dt_token') ||
       readCookie('token') ||
       readCookie('access_token') ||
       sniffJWTFromStorage() ||
       ''
     );
   }
+
 
   async function fetchAuth(path, options = {}) {
     const token = getToken();
