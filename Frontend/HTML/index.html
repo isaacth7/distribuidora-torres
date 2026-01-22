@@ -416,155 +416,157 @@
                 <dialog id="checkoutDialog" class="ck-dialog">
                     <form method="dialog" class="ck-card" id="checkoutForm" aria-label="Checkout">
 
-                        <div class="ck-grid">
-                            <!-- ============ LEFT: PAYMENT ============ -->
-                            <section class="ck-left">
-                                <h2 class="ck-title">Pago</h2>
-                                <hr class="ck-sep" />
-
-                                <!-- Banner si hay rollos -->
-                                <div id="rolloNotice" class="ck-banner" hidden>
-                                    Esta orden incluye rollos (peso variable). El total mostrado es <b>estimado.</b>
-                                    Te notificaremos el precio final después de pesar los rollos, y seguidamente puedes 
-                                    completar el pago. Nunca vas a pagar más del precio total estimado.
-                                </div>
-
-                                <!-- Delivery -->
-                                <div class="ck-block">
-                                    <label class="ck-label">Forma de entrega</label>
-                                    <div class="ck-radio-row">
-                                        <label class="ck-radio">
-                                            <input type="radio" name="delivery_method" value="retiro" checked>
-                                            <span>Retiro en tienda</span>
-                                        </label>
-                                        <label class="ck-radio">
-                                            <input type="radio" name="delivery_method" value="envio">
-                                            <span>Envío</span>
-                                        </label>
-                                        <label class="ck-radio">
-                                            <input type="radio" name="delivery_method" value="ruta">
-                                            <span>Entrega en ruta</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="ck-field" id="addressWrap" hidden>
-                                        <label for="addressSelect" class="ck-sublabel">Dirección de envío</label>
-                                        <select id="addressSelect" class="ck-input"></select>
-                                        <div class="ck-help">
-                                            <a href="../HTML/Perfil.html#direcciones" target="_blank"
-                                                rel="noopener">Agregar o editar direcciones</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Pay with -->
-                                <div class="ck-block">
-                                    <label class="ck-label">Método de pago:</label>
-                                    <div class="ck-radio-row">
-                                        <label class="ck-radio">
-                                            <input type="radio" name="payment_method" value="efectivo" checked>
-                                            <span>Efectivo</span>
-                                        </label>
-                                        <label class="ck-radio">
-                                            <input type="radio" name="payment_method" value="sinpe">
-                                            <span>SINPE</span>
-                                        </label>
-                                        <label class="ck-radio ck-disabled">
-                                            <input type="radio" name="payment_method" value="tarjeta" disabled>
-                                            <span>Tarjeta</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <!-- Card fields (placeholder, deshabilitado por ahora) -->
-                                <div class="ck-block ck-card-fields" aria-disabled="true" id="cardWrap">
-                                    <label class="ck-sublabel">Número de tarjeta</label>
-                                    <input class="ck-input" type="text" inputmode="numeric"
-                                        placeholder="1234 5678 9101 1121" disabled>
-
-                                    <div class="ck-row">
-                                        <div class="ck-col">
-                                            <label class="ck-sublabel">Fecha de expiración</label>
-                                            <input class="ck-input" type="text" placeholder="MM/YY" disabled>
-                                        </div>
-                                        <div class="ck-col">
-                                            <label class="ck-sublabel">CVV</label>
-                                            <input class="ck-input" type="text" placeholder="123" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- SINPE upload (solo si NO hay rollos y eligen sinpe) -->
-                                <div class="ck-block" id="sinpeWrap" hidden>
-                                    <p class="ck-hint">Transferir al <strong>SINPE 8XX-XXXX-XXXX</strong> y subir
-                                        comprobante </p>
-                                    <input type="file" id="sinpeReceipt" class="ck-input"
-                                        accept="image/*,application/pdf">
-                                </div>
-
-                                <!-- Texto cuando hay rollos (pago pendiente) -->
-                                <div class="ck-block" id="pendingWrap" hidden>
-                                    <p class="ck-hint">Te notificaremos el precio final después de pesar los rollos.
-                                        Seguidamente puedes completar el pago.</p>
-                                </div>
-
-                                <!-- Primary action -->
-                                <button type="button" class="ck-btn-primary" id="btnConfirm">
-                                    <span id="btnConfirmLabel">Confirmar pedido</span>
-                                </button>
-
-                                <p class="ck-privacy">
-                                    Tus datos personales serán utilizados para procesar tu orden.
-                                </p>
-                            </section>
-
-                            <!-- ============ RIGHT: ORDER SUMMARY ============ -->
-                            <aside class="ck-right">
-                                <h3 class="ck-title-sm">Resumen de la Orden</h3>
-
-                                <div id="ckCartList" class="ck-list"><!-- render items --></div>
-
-                                <hr class="ck-sep" />
-
-                                <div class="ck-coupon">
-                                    <input type="text" id="couponCode" class="ck-input"
-                                        placeholder="Código de descuento">
-                                    <button type="button" class="ck-btn-muted" id="btnApplyCoupon">Aplicar</button>
-                                </div>
-
-                                <div class="ck-block">
-                                    <label for="ckNotes" class="ck-label">Notas (opcional)</label>
-                                    <textarea id="ckNotes" class="ck-input" rows="2"
-                                        placeholder="Ej: Entregar antes de las 5pm"></textarea>
-                                </div>
-
-                                <div class="ck-totals">
-                                    <div class="ck-line"><span>Subtotal</span><strong id="ckSubtotal">₡0</strong></div>
-                                    <div class="ck-line"><span>Envío</span><strong id="ckShipping">₡0</strong></div>
-                                    <hr class="ck-sep thin" />
-                                    <div class="ck-line total"><span>Total</span><strong id="ckTotal">₡0</strong></div>
-                                    <div class="ck-tax-note">Incluyendo impuestos.</div>
-                                </div>
-                            </aside>
-                        </div>
-
                         <!-- Close (X) -->
                         <button type="button" class="ck-close" id="ckClose" aria-label="Close">×</button>
+
+                        <div class="ck-body">
+                            <div class="ck-grid">
+                                <!-- ============ LEFT: PAYMENT ============ -->
+                                <section class="ck-left">
+                                    <h2 class="ck-title">Pago</h2>
+                                    <hr class="ck-sep" />
+
+                                    <!-- Banner si hay rollos -->
+                                    <div id="rolloNotice" class="ck-banner" hidden>
+                                        Esta orden incluye rollos (peso variable). El total mostrado es <b>estimado.</b>
+                                        Te notificaremos el precio final después de pesar los rollos, y seguidamente
+                                        puedes
+                                        completar el pago. Nunca vas a pagar más del precio total estimado.
+                                    </div>
+
+                                    <!-- Delivery -->
+                                    <div class="ck-block">
+                                        <label class="ck-label">Forma de entrega</label>
+                                        <div class="ck-radio-row">
+                                            <label class="ck-radio">
+                                                <input type="radio" name="delivery_method" value="retiro" checked>
+                                                <span>Retiro en tienda</span>
+                                            </label>
+                                            <label class="ck-radio">
+                                                <input type="radio" name="delivery_method" value="envio">
+                                                <span>Envío</span>
+                                            </label>
+                                            <label class="ck-radio">
+                                                <input type="radio" name="delivery_method" value="ruta">
+                                                <span>Entrega en ruta</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="ck-field" id="addressWrap" hidden>
+                                            <label for="addressSelect" class="ck-sublabel">Dirección de envío</label>
+                                            <select id="addressSelect" class="ck-input"></select>
+
+                                            <div class="ck-help">
+                                                <a class="ck-link" href="../HTML/Perfil.html#direcciones"
+                                                    target="_blank" rel="noopener">Agregar o editar direcciones</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pay with -->
+                                    <div class="ck-block">
+                                        <label class="ck-label">Método de pago:</label>
+                                        <div class="ck-radio-row">
+                                            <label class="ck-radio">
+                                                <input type="radio" name="payment_method" value="efectivo" checked>
+                                                <span>Efectivo</span>
+                                            </label>
+                                            <label class="ck-radio">
+                                                <input type="radio" name="payment_method" value="sinpe">
+                                                <span>SINPE</span>
+                                            </label>
+                                            <label class="ck-radio ck-disabled">
+                                                <input type="radio" name="payment_method" value="tarjeta" disabled>
+                                                <span>Tarjeta</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card fields (placeholder, deshabilitado por ahora) -->
+                                    <div class="ck-block ck-card-fields" aria-disabled="true" id="cardWrap">
+                                        <label class="ck-sublabel">Número de tarjeta</label>
+                                        <input class="ck-input" type="text" inputmode="numeric"
+                                            placeholder="1234 5678 9101 1121" disabled>
+
+                                        <div class="ck-row">
+                                            <div class="ck-col">
+                                                <label class="ck-sublabel">Fecha de expiración</label>
+                                                <input class="ck-input" type="text" placeholder="MM/YY" disabled>
+                                            </div>
+                                            <div class="ck-col">
+                                                <label class="ck-sublabel">CVV</label>
+                                                <input class="ck-input" type="text" placeholder="123" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- SINPE upload -->
+                                    <div class="ck-block" id="sinpeWrap" hidden>
+                                        <p class="ck-hint">Transferir al <strong>SINPE 8XX-XXXX-XXXX</strong> y subir
+                                            comprobante</p>
+                                        <input type="file" id="sinpeReceipt" class="ck-input"
+                                            accept="image/*,application/pdf">
+                                    </div>
+
+                                    <!-- Texto cuando hay rollos -->
+                                    <div class="ck-block" id="pendingWrap" hidden>
+                                        <p class="ck-hint">Te notificaremos el precio final después de pesar los rollos.
+                                            Seguidamente puedes completar el pago.</p>
+                                    </div>
+
+                                    <!-- Primary action -->
+                                    <button type="button" class="ck-btn-primary" id="btnConfirm">
+                                        <span id="btnConfirmLabel">Confirmar pedido</span>
+                                    </button>
+
+                                    <p class="ck-privacy">Tus datos personales serán utilizados para procesar tu orden.
+                                    </p>
+                                </section>
+
+                                <!-- ============ RIGHT: ORDER SUMMARY ============ -->
+                                <aside class="ck-right">
+                                    <h3 class="ck-title-sm">Resumen de la Orden</h3>
+
+                                    <!-- Render items aquí -->
+                                    <div id="ckCartList" class="ck-list"></div>
+
+                                    <hr class="ck-sep" />
+
+                                    <div class="ck-coupon">
+                                        <input type="text" id="couponCode" class="ck-input"
+                                            placeholder="Código de descuento">
+                                        <button type="button" class="ck-btn-muted" id="btnApplyCoupon">Aplicar</button>
+                                    </div>
+
+                                    <div class="ck-block">
+                                        <label for="ckNotes" class="ck-label">Notas (opcional)</label>
+                                        <textarea id="ckNotes" class="ck-input ck-textarea" rows="2"
+                                            placeholder="Ej: Entregar antes de las 5pm"></textarea>
+                                    </div>
+
+                                    <div class="ck-totals">
+                                        <div class="ck-line"><span>Subtotal</span><strong id="ckSubtotal">₡0</strong>
+                                        </div>
+                                        <div class="ck-line"><span>Envío</span><strong id="ckShipping">₡0</strong></div>
+                                        <hr class="ck-sep thin" />
+                                        <div class="ck-line total"><span>Total</span><strong id="ckTotal">₡0</strong>
+                                        </div>
+                                        <div class="ck-tax-note">Incluyendo impuestos.</div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
                     </form>
                 </dialog>
 
-            </div>
-        </footer>
-    </aside>
 
-
-    <!-- incluye CSS y JS del auth -->
-    <link rel="stylesheet" href="../CSS/auth.css">
-    <script src="../JS/auth.js" defer></script>
-    <script src="../JS/header.js" defer></script>
-    <script src="../JS/cart.js" defer></script>
-    <script src="../JS/checkout.js" defer></script>
-    <script src="../JS/config.js"></script>
+                <!-- incluye CSS y JS del auth -->
+                <link rel="stylesheet" href="../CSS/auth.css">
+                <script src="../JS/auth.js" defer></script>
+                <script src="../JS/header.js" defer></script>
+                <script src="../JS/cart.js" defer></script>
+                <script src="../JS/checkout.js" defer></script>
+                <script src="../JS/config.js"></script>
 
 </body>
 
