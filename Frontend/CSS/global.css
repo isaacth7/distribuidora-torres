@@ -29,3 +29,23 @@ select:-webkit-autofill {
   box-shadow: 0 0 0px 1000px var(--surface) inset;
   transition: background-color 9999s ease-in-out 0s;
 }
+
+/* Links siempre negros (normal, visited, hover, active) */
+a, a:visited, a:hover, a:active{
+  color: #111 !important;
+  text-decoration: none;
+}
+
+/* Inputs/selects siempre negros */
+input, textarea, select, button{
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+}
+
+/* Opciones del select (algunos móviles respetan esto) */
+select, option{
+  color:#111 !important;
+}
+
+/* Quita highlight azul al tocar */
+*{ -webkit-tap-highlight-color: transparent; }
