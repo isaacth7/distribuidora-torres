@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("[olvido-contrasena] JS cargado ✅");
 
   // Ajustá esto a tu backend
-  const API_BASE = "https://distribuidora-torres.onrender.com";
+  const API_BASE = window.APP_CONFIG.API_BASE;
 
   const form = document.getElementById("formForgot");
   const correoInput = document.getElementById("correo");

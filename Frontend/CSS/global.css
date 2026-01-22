@@ -1,0 +1,31 @@
+/* Quitar estilos nativos raros en iOS/Android */
+input, select, textarea, button {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 10px;
+}
+
+/* Color de selección / toggles */
+:root { accent-color: var(--brand); }
+
+/* Focus consistente (sin azul del browser) */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand) 55%, white);
+  outline-offset: 2px;
+}
+
+/* Tap highlight azul (iOS) */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* Links que se ponen azules */
+a { color: inherit; }
+
+/* Autofill (Chrome móvil) */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--text);
+  box-shadow: 0 0 0px 1000px var(--surface) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}

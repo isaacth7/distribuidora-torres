@@ -1,5 +1,5 @@
 // ====== CONFIG ======
-const API_BASE = 'https://distribuidora-torres.onrender.com'; // tu backend
+const API_BASE = window.APP_CONFIG.API_BASE;
 const K_TOKEN = 'dt_token';
 const K_USER  = 'dt_user';
 

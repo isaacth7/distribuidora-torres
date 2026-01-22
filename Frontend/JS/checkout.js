@@ -1,7 +1,7 @@
 // public/JS/checkout.js
 (() => {
   // ====== CONFIG ======
-  const API_BASE = 'https://distribuidora-torres.onrender.com';
+  const API_BASE = window.APP_CONFIG.API_BASE;
   const DEBUG = false;
 
   // ====== HELPERS ======
