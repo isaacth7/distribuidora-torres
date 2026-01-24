@@ -1,15 +1,15 @@
 // ===== Producto: Tipo -> Subtipo -> Tamaño =====
 
 // ---------- Utils ----------
-const apiAuth    = window.apiFetch;        // helper con Authorization
-const API_BASE   = window.DT_API_BASE;     // 'http://localhost:3000'
+const apiAuth = window.apiFetch;        // helper con Authorization
+const API_BASE = window.DT_API_BASE;     // 'http://localhost:3000'
 
-const $  = s => document.querySelector(s);
+const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const pickArray = (p) =>
   Array.isArray(p) ? p :
-  Array.isArray(p?.items) ? p.items :
-  Array.isArray(p?.data)  ? p.data  : [];
+    Array.isArray(p?.items) ? p.items :
+      Array.isArray(p?.data) ? p.data : [];
 
 const fmtCRC = n => `₡ ${Number(n || 0).toLocaleString('es-CR')}`;
 
@@ -30,10 +30,10 @@ function parseWHFromText(txt) {
   return m ? [Number(m[1]), Number(m[2])] : null;
 }
 const getTipoId = (b) => Number(findValDeep(b, /^(id_)?tipo(_bolsa)?$/i));
-const getSubId  = (b) => Number(findValDeep(b, /^(id_)?subtipo(_bolsa)?$/i));
-const getAncho  = (b) => findValDeep(b, /^ancho(_(bolsa|pulgadas|in|cm))?$|^width$/i);
-const getAlto   = (b) => findValDeep(b, /^alto(_(bolsa|pulgadas|in|cm))?$|^height$/i);
-const getPriceLegacy  = (b) => {
+const getSubId = (b) => Number(findValDeep(b, /^(id_)?subtipo(_bolsa)?$/i));
+const getAncho = (b) => findValDeep(b, /^ancho(_(bolsa|pulgadas|in|cm))?$|^width$/i);
+const getAlto = (b) => findValDeep(b, /^alto(_(bolsa|pulgadas|in|cm))?$|^height$/i);
+const getPriceLegacy = (b) => {
   const v = findValDeep(b, /^precio(_(unitario|kilo))?$|^price$/i);
   return v == null || v === '' ? 0 : Number(v);
 };
@@ -61,27 +61,27 @@ function getBolsaId(v) {
 
 // ---------- UI refs ----------
 const el = {
-  title:  $('.pd-title'),
-  price:  $('#lblPrice'),
+  title: $('.pd-title'),
+  price: $('#lblPrice'),
   selSub: $('#selSubtipo'),
   selTam: $('#selTam'),
-  qtyIn:  $('#pdQtyInput'),
+  qtyIn: $('#pdQtyInput'),
   qtyOut: document.querySelector('.pd-stepper-value')?.tagName === 'OUTPUT'
-          ? document.querySelector('.pd-stepper-value')
-          : null,
+    ? document.querySelector('.pd-stepper-value')
+    : null,
   packRow: $('#packRow'),
   subTot: $('.pd-subtotal'),
-  minus:  document.querySelector('.pd-stepper-btn[aria-label="Restar"]'),
-  plus:   document.querySelector('.pd-stepper-btn[aria-label="Sumar"]'),
-  desc:   $('.pd-desc'),
+  minus: document.querySelector('.pd-stepper-btn[aria-label="Restar"]'),
+  plus: document.querySelector('.pd-stepper-btn[aria-label="Sumar"]'),
+  desc: $('.pd-desc'),
   addBtn: $('.pd-add-btn'),
-  imgs:   $$('.pd-col-left .pd-photo img'),
+  imgs: $$('.pd-col-left .pd-photo img'),
 
-  note:       $('#pdNote'),
-  selPack:    $('#selPack'),
-  lblPack:    $('#lblPack'),
+  note: $('#pdNote'),
+  selPack: $('#selPack'),
+  lblPack: $('#lblPack'),
   priceLabel: $('#priceLabel'),
-  qtyLabel:   $('#qtyLabel'),
+  qtyLabel: $('#qtyLabel'),
 
   // ✅ NUEVO: loader + content wrapper (deben existir en el HTML)
   loading: document.getElementById('pdLoading'),
@@ -117,7 +117,7 @@ function pdSetLoading(isLoading, msg = null) {
 
 // ---------- Estado ----------
 const qs = new URLSearchParams(location.search);
-const qTipo    = qs.get('tipo');
+const qTipo = qs.get('tipo');
 const qSubtipo = qs.get('subtipo');
 
 let tipos = [];
@@ -134,7 +134,7 @@ let qtyStep = 1;
 // ---------- API ----------
 async function apiFetchPublic(path) {
   try {
-    const res  = await fetch(`${API_BASE}${path}`);
+    const res = await fetch(`${API_BASE}${path}`);
     const data = await res.json().catch(() => null);
     return { ok: res.ok, data };
   } catch (e) {
@@ -181,7 +181,7 @@ async function loadPricingForBolsa(idBolsa) {
   }
 
   // normalización mínima
-  const num  = v => (v == null || v === '') ? null : Number(v);
+  const num = v => (v == null || v === '') ? null : Number(v);
   const bool = v => !!(v === true || v === 1 || v === '1' || v === 'true');
 
   const estrategia =
@@ -189,16 +189,16 @@ async function loadPricingForBolsa(idBolsa) {
 
   pricing = {
     estrategia,
-    precio_por_kg:     num(raw.precio_por_kg ?? raw.price_per_kg),
+    precio_por_kg: num(raw.precio_por_kg ?? raw.price_per_kg),
     precio_por_unidad: num(raw.precio_por_unidad ?? raw.unit_price),
-    es_peso_variable:  bool(raw.es_peso_variable ?? raw.peso_variable ?? raw.variable_weight),
-    peso_max_kg:       num(raw.peso_max_kg ?? raw.max_kg),
+    es_peso_variable: bool(raw.es_peso_variable ?? raw.peso_variable ?? raw.variable_weight),
+    peso_max_kg: num(raw.peso_max_kg ?? raw.max_kg),
     packs: Array.isArray(raw.packs) ? raw.packs.map(p => ({
       pack_qty: num(p.pack_qty ?? p.qty ?? p.cantidad) ?? 1,
       precio_por_pack: num(p.precio_por_pack ?? p.price ?? p.monto) ?? 0
     })) : (raw.precio_por_pack != null
-            ? [{ pack_qty: 1, precio_por_pack: num(raw.precio_por_pack) }]
-            : [])
+      ? [{ pack_qty: 1, precio_por_pack: num(raw.precio_por_pack) }]
+      : [])
   };
 
   console.log('pricing normalized', pricing);
@@ -225,7 +225,7 @@ function renderTamanos() {
     const vid = getBolsaId(v);
     const sid = getBolsaId(selectedBolsa);
     return `
-      <option value="${isNaN(vid) ? '' : vid}" ${vid===sid ? 'selected' : ''}>
+      <option value="${isNaN(vid) ? '' : vid}" ${vid === sid ? 'selected' : ''}>
         ${sizeText(v)}
       </option>
     `;
@@ -242,10 +242,10 @@ function applyQtyAttrs() {
   if (!el.qtyIn) return;
   if (pricing?.estrategia === 'por_kg' && !pricing.es_peso_variable) {
     el.qtyIn.step = '0.25';
-    el.qtyIn.min  = '0.25';
+    el.qtyIn.min = '0.25';
   } else {
     el.qtyIn.step = '1';
-    el.qtyIn.min  = '1';
+    el.qtyIn.min = '1';
   }
 }
 function updateQtyDisplay() {
@@ -270,7 +270,7 @@ function configureUIForPricing() {
 
   if (!pricing) {
     el.priceLabel && (el.priceLabel.textContent = 'Precio:');
-    el.qtyLabel   && (el.qtyLabel.textContent   = 'Cantidad:');
+    el.qtyLabel && (el.qtyLabel.textContent = 'Cantidad:');
     qtyStep = 1; setQty(1, true); applyQtyAttrs();
     if (el.price) el.price.textContent = fmtCRC(getPriceLegacy(selectedBolsa));
     return;
@@ -297,7 +297,7 @@ function configureUIForPricing() {
 
   if (pricing.estrategia === 'por_pack') {
     el.priceLabel && (el.priceLabel.textContent = 'Precio por pack:');
-    el.qtyLabel   && (el.qtyLabel.textContent   = 'Cantidad (packs):');
+    el.qtyLabel && (el.qtyLabel.textContent = 'Cantidad (packs):');
     qtyStep = 1; setQty(Math.max(1, qty), true); applyQtyAttrs();
 
     const opts = (pricing.packs || []).map(p =>
@@ -314,7 +314,7 @@ function configureUIForPricing() {
 
   if (pricing.estrategia === 'por_unidad') {
     el.priceLabel && (el.priceLabel.textContent = 'Precio por unidad:');
-    el.qtyLabel   && (el.qtyLabel.textContent   = 'Cantidad (unidades):');
+    el.qtyLabel && (el.qtyLabel.textContent = 'Cantidad (unidades):');
     qtyStep = 1; setQty(Math.max(1, qty), true); applyQtyAttrs();
     el.price && (el.price.textContent = fmtCRC(pricing.precio_por_unidad));
   }
@@ -326,7 +326,7 @@ function renderPrecioYSubtotal() {
 
   if (!pricing) {
     const price = getPriceLegacy(selectedBolsa);
-    el.price && (el.price.textContent  = fmtCRC(price));
+    el.price && (el.price.textContent = fmtCRC(price));
     el.subTot.textContent = fmtCRC(price * qty);
     return;
   }
@@ -423,13 +423,25 @@ async function onSubtipoChange(newId) {
 }
 
 function renderImgs(urls = []) {
-  const list = urls.length ? urls : ['../Images/placeholder.png'];
-  // Si no hay imgs en el DOM (porque decidiste generarlas dinámicamente), no revienta
-  if (!el.imgs || !el.imgs.length) return;
+  const gallery = document.getElementById('pdGallery');
+  if (!gallery) return;
 
-  for (let i = 0; i < el.imgs.length; i++) {
-    el.imgs[i].src = list[Math.min(i, list.length - 1)];
-    el.imgs[i].alt = selectedSub?.nombre_subtipo_bolsa || 'Producto';
+  const list = urls.length ? urls : ['../Images/placeholder.png'];
+
+  // crea máximo 3 como tu layout original (cámbialo si querés más)
+  const max = 3;
+  gallery.innerHTML = '';
+
+  for (let i = 0; i < Math.min(max, list.length); i++) {
+    const fig = document.createElement('figure');
+    fig.className = 'pd-photo';
+
+    const img = document.createElement('img');
+    img.src = list[i];
+    img.alt = selectedSub?.nombre_subtipo_bolsa || 'Producto';
+
+    fig.appendChild(img);
+    gallery.appendChild(fig);
   }
 }
 
@@ -460,7 +472,7 @@ if (el.selPack) el.selPack.addEventListener('change', e => {
 
 // stepper +/- y edición manual
 if (el.minus) el.minus.addEventListener('click', () => setQty(qty - qtyStep));
-if (el.plus)  el.plus .addEventListener('click', () => setQty(qty + qtyStep));
+if (el.plus) el.plus.addEventListener('click', () => setQty(qty + qtyStep));
 
 if (el.qtyIn) {
   el.qtyIn.addEventListener('input', () => {
@@ -537,7 +549,7 @@ if (el.qtyIn) {
 // === Cantidad según tu estrategia de pricing (negocio actual: unidades / kg / rollos) ===
 function resolveCantidadParaBackend() {
   if (pricing?.estrategia === 'por_kg' && !pricing.es_peso_variable) return Number(qty);                     // kg
-  if (pricing?.estrategia === 'por_kg' &&  pricing.es_peso_variable) return Math.max(1, Math.round(qty || 1)); // rollos
+  if (pricing?.estrategia === 'por_kg' && pricing.es_peso_variable) return Math.max(1, Math.round(qty || 1)); // rollos
   return Math.max(1, Math.round(qty || 1)); // unidades
 }
 

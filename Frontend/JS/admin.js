@@ -327,7 +327,8 @@
       <img src="${i.url_imagen}" alt="${i.descripcion || ''}">
       <div class="ad-media-body">
         <div style="font-size:12px;">
-          <div style="font-weight:800;">#${i.id_imagen}</div>
+          <div style="font-weight:800;">Orden #${i.orden ?? '—'}</div>
+          <div style="font-size:11px;color:var(--muted);">ID: ${i.id_imagen}</div>
           <div style="color:var(--muted);">${i.descripcion || '—'}</div>
         </div>
         <div class="ad-row-actions">
@@ -457,15 +458,33 @@
 
             } else if (mode === 'update') {
                 const id = dlgImage.dataset.id;
-                const payload = {
-                    url_imagen: $('#formImage [name="url_imagen"]').value.trim() || null,
-                    descripcion: $('#formImage [name="descripcion"]').value.trim() || null,
-                    orden: $('#formImage [name="orden"]').value ? Number($('#formImage [name="orden"]').value) : null
-                };
-                const r = await apiFetchPublic(`/api/admin/imagenes/${id}`, { method: 'PUT', body: payload, auth: true });
+
+                const urlRaw = $('#formImage [name="url_imagen"]').value.trim();
+                const descRaw = $('#formImage [name="descripcion"]').value.trim();
+                const ordRaw = $('#formImage [name="orden"]').value;
+
+                // ✅ solo manda lo que el usuario realmente cambió
+                const payload = {};
+                if (urlRaw) payload.url_imagen = urlRaw;              // si está vacío, NO lo mandes
+                if (descRaw) payload.descripcion = descRaw;           // si está vacío, NO lo mandes
+                if (ordRaw !== '' && ordRaw != null) payload.orden = Number(ordRaw);
+
+                // si no hay nada para actualizar, no pegues al backend
+                if (!Object.keys(payload).length) {
+                    toast('No hay cambios para guardar', false);
+                    return;
+                }
+
+                const r = await apiFetchPublic(`/api/admin/imagenes/${id}`, {
+                    method: 'PUT',
+                    body: payload,
+                    auth: true
+                });
+
                 if (!r.ok) throw new Error(r.data?.error || `HTTP ${r.status}`);
                 toast('Imagen actualizada');
             }
+
 
             dlgImage.close();
             mediaPicker.requestSubmit(); // recargar grilla
