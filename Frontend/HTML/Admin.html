@@ -161,9 +161,19 @@
 
                 <form id="mediaPicker" class="ad-filters compact">
                     <div class="ad-field">
-                        <label>ID subtipo</label>
-                        <input name="id_subtipo" type="number" min="1" placeholder="Ej: 12" required />
+                        <label>Subtipo</label>
+
+                        <!-- antes era input number; ahora es select -->
+                        <select name="id_subtipo" id="mediaSubtipo" required>
+                            <option value="" selected disabled>Selecciona un subtipo…</option>
+                        </select>
+
+                        <!-- opcional: mini ayuda -->
+                        <small style="color:var(--muted); display:block; margin-top:6px;">
+                            Tip: escribe para buscar (si tu browser lo permite) o despliega la lista.
+                        </small>
                     </div>
+
                     <div class="ad-actions">
                         <button class="ad-btn primary" type="submit">Cargar</button>
                     </div>

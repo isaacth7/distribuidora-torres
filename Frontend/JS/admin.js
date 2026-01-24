@@ -247,50 +247,116 @@
     const mediaGrid = $('#mediaGrid');
     const dlgImage = $('#dlgImage');
 
+    const mediaSubtipoSelect = $('#mediaSubtipo');
+
+    function getSelectedSubtipoId() {
+        // sirve tanto para input como para select, pero acá ya es select
+        return mediaPicker?.elements?.id_subtipo?.value || '';
+    }
+
+    /** Cargar subtipos para el select */
+    async function loadSubtiposForMediaSelect() {
+        if (!mediaSubtipoSelect) return;
+
+        // si ya está cargado, no lo vuelvas a pedir (opcional)
+        if (mediaSubtipoSelect.dataset.loaded === '1') return;
+
+        mediaSubtipoSelect.innerHTML = `<option value="" selected disabled>Cargando subtipos…</option>`;
+
+        try {
+            /**
+             * ⚠️ Ajusta este endpoint según tu backend.
+             * Ideal: un endpoint admin que liste subtipos con id + nombre + (tipo).
+             * Ejemplos posibles:
+             *  - /api/admin/subtipos
+             *  - /api/subtipos
+             *  - /api/catalogo/subtipos
+             */
+            const r = await apiFetchPublic(`/api/admin/subtipos`, { method: 'GET', auth: true });
+            if (!r.ok) throw new Error(r.data?.error || `HTTP ${r.status}`);
+
+            const items = r.data?.items || r.data || [];
+
+            if (!items.length) {
+                mediaSubtipoSelect.innerHTML = `<option value="" selected disabled>No hay subtipos</option>`;
+                return;
+            }
+
+            // Render: puedes personalizar el label a tu gusto
+            mediaSubtipoSelect.innerHTML = `
+      <option value="" selected disabled>Selecciona un subtipo…</option>
+      ${items.map(s => {
+                const id = s.id_subtipo ?? s.id ?? '';
+                const nombre = s.nombre_subtipo ?? s.nombre ?? `Subtipo #${id}`;
+                const tipo = s.tipo ?? s.nombre_tipo ?? '';
+                const label = tipo ? `${tipo} — ${nombre}` : nombre;
+                return `<option value="${id}">${label}</option>`;
+            }).join('')}
+    `;
+
+            mediaSubtipoSelect.dataset.loaded = '1';
+        } catch (e) {
+            console.error(e);
+            mediaSubtipoSelect.innerHTML = `<option value="" selected disabled>Error cargando subtipos</option>`;
+            toast('No se pudieron cargar los subtipos', false);
+        }
+    }
+
     function renderMedia(items) {
-        if (!items?.length) { mediaGrid.innerHTML = `<div class="ad-card">Sin imágenes para este subtipo.</div>`; return; }
+        if (!items?.length) {
+            mediaGrid.innerHTML = `<div class="ad-card">Sin imágenes para este subtipo.</div>`;
+            return;
+        }
+
         mediaGrid.innerHTML = items.map(i => `
-      <div class="ad-media-card" data-id="${i.id_imagen}">
-        <img src="${i.url_imagen}" alt="${i.descripcion || ''}">
-        <div class="ad-media-body">
-          <div style="font-size:12px;">
-            <div style="font-weight:800;">#${i.id_imagen}</div>
-            <div style="color:var(--muted);">${i.descripcion || '—'}</div>
-          </div>
-          <div class="ad-row-actions">
-            <button class="ad-btn ghost" data-edit>Editar</button>
-            <button class="ad-btn danger" data-del>Eliminar</button>
-          </div>
+    <div class="ad-media-card" data-id="${i.id_imagen}">
+      <img src="${i.url_imagen}" alt="${i.descripcion || ''}">
+      <div class="ad-media-body">
+        <div style="font-size:12px;">
+          <div style="font-weight:800;">#${i.id_imagen}</div>
+          <div style="color:var(--muted);">${i.descripcion || '—'}</div>
+        </div>
+        <div class="ad-row-actions">
+          <button class="ad-btn ghost" data-edit>Editar</button>
+          <button class="ad-btn danger" data-del>Eliminar</button>
         </div>
       </div>
-    `).join('');
+    </div>
+  `).join('');
 
         mediaGrid.querySelectorAll('[data-del]').forEach(btn => {
             btn.addEventListener('click', async () => {
-                const card = btn.closest('.ad-media-card'); const id = card?.dataset.id;
+                const card = btn.closest('.ad-media-card');
+                const id = card?.dataset.id;
                 if (!id) return;
                 if (!confirm('¿Eliminar imagen?')) return;
+
                 try {
                     const r = await apiFetchPublic(`/api/admin/imagenes/${id}`, { method: 'DELETE', auth: true });
                     if (!r.ok) throw new Error(r.data?.error || `HTTP ${r.status}`);
                     toast('Imagen eliminada');
                     card.remove();
-                } catch (e) { toast(e.message || 'No se pudo eliminar', false); }
+                } catch (e) {
+                    toast(e.message || 'No se pudo eliminar', false);
+                }
             });
         });
 
         mediaGrid.querySelectorAll('[data-edit]').forEach(btn => {
             btn.addEventListener('click', async () => {
-                const card = btn.closest('.ad-media-card'); const id = card?.dataset.id;
+                const card = btn.closest('.ad-media-card');
+                const id = card?.dataset.id;
                 if (!id) return;
-                // Cargar detalle actual (si tu endpoint lo permite). Si no, edita con lo que ves.
+
                 $('#dlgImageTitle').textContent = `Editar imagen #${id}`;
-                $('#formImage [name="id_subtipo"]').value = mediaPicker.id_subtipo.value;
-                $('#formImage [name="url_imagen"]').value = ''; // edición simple: podrías abrir PUT sólo para desc/orden
-                $('#formImage [name="descripcion"]').value = card.querySelector('.ad-media-body div:nth-child(1) div:nth-child(2)')?.textContent || '';
+                $('#formImage [name="id_subtipo"]').value = getSelectedSubtipoId();
+                $('#formImage [name="url_imagen"]').value = '';
+                $('#formImage [name="descripcion"]').value =
+                    card.querySelector('.ad-media-body div:nth-child(1) div:nth-child(2)')?.textContent || '';
                 $('#formImage [name="orden"]').value = 1;
-                // Modo: sólo actualización (URL oculto si no usas)
-                toggleImageMode('url'); // dejamos url visible por si actualizas
+
+                toggleImageMode('url');
+
                 try { dlgImage.showModal(); } catch { dlgImage.setAttribute('open', ''); }
                 dlgImage.dataset.mode = 'update';
                 dlgImage.dataset.id = id;
@@ -305,8 +371,9 @@
 
     mediaPicker?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const id = e.target.id_subtipo.value;
-        if (!id) return;
+        const id = getSelectedSubtipoId();
+        if (!id) return toast('Selecciona un subtipo', false);
+
         try {
             const r = await apiFetchPublic(`/api/admin/subtipos/${id}/imagenes`, { method: 'GET', auth: true });
             if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -317,22 +384,26 @@
     });
 
     $('#mediaNewUrl')?.addEventListener('click', () => {
-        const id = mediaPicker.id_subtipo.value;
-        if (!id) return toast('Selecciona un ID de subtipo', false);
+        const id = getSelectedSubtipoId();
+        if (!id) return toast('Selecciona un subtipo', false);
+
         $('#dlgImageTitle').textContent = 'Nueva imagen por URL';
         $('#formImage').reset();
         $('#formImage [name="id_subtipo"]').value = id;
+
         toggleImageMode('url');
         try { dlgImage.showModal(); } catch { dlgImage.setAttribute('open', ''); }
         dlgImage.dataset.mode = 'create-url';
     });
 
     $('#mediaUpload')?.addEventListener('click', () => {
-        const id = mediaPicker.id_subtipo.value;
-        if (!id) return toast('Selecciona un ID de subtipo', false);
+        const id = getSelectedSubtipoId();
+        if (!id) return toast('Selecciona un subtipo', false);
+
         $('#dlgImageTitle').textContent = 'Subir imagen';
         $('#formImage').reset();
         $('#formImage [name="id_subtipo"]').value = id;
+
         toggleImageMode('file');
         try { dlgImage.showModal(); } catch { dlgImage.setAttribute('open', ''); }
         dlgImage.dataset.mode = 'upload';
@@ -340,8 +411,9 @@
 
     $('#formImage')?.addEventListener('submit', async (e) => {
         const action = e.submitter?.value;
-        if (action !== 'ok') return; // cancel
+        if (action !== 'ok') return;
         e.preventDefault();
+
         const mode = dlgImage.dataset.mode;
         const idSub = $('#formImage [name="id_subtipo"]').value;
 
@@ -355,16 +427,20 @@
                 const r = await apiFetchPublic(`/api/admin/subtipos/${idSub}/imagenes`, { method: 'POST', body: payload, auth: true });
                 if (!r.ok) throw new Error(r.data?.error || `HTTP ${r.status}`);
                 toast('Imagen creada');
+
             } else if (mode === 'upload') {
                 const f = $('#formImage [name="file"]').files[0];
                 if (!f) throw new Error('Selecciona un archivo');
+
                 const fd = new FormData();
                 fd.append('file', f);
                 fd.append('descripcion', $('#formImage [name="descripcion"]').value.trim());
                 fd.append('orden', $('#formImage [name="orden"]').value || 1);
+
                 const r = await apiFetchPublic(`/api/admin/subtipos/${idSub}/imagenes/upload`, { method: 'POST', body: fd, auth: true });
                 if (!r.ok) throw new Error(r.data?.error || `HTTP ${r.status}`);
                 toast('Imagen subida');
+
             } else if (mode === 'update') {
                 const id = dlgImage.dataset.id;
                 const payload = {
@@ -376,13 +452,21 @@
                 if (!r.ok) throw new Error(r.data?.error || `HTTP ${r.status}`);
                 toast('Imagen actualizada');
             }
+
             dlgImage.close();
-            // recargar grilla
-            mediaPicker.requestSubmit();
+            mediaPicker.requestSubmit(); // recargar grilla
         } catch (err) {
             toast(err.message || 'No se pudo guardar la imagen', false);
         }
     });
+
+    /**
+     * ✅ Importante: llama a esto cuando abras el tab media.
+     * Si tú tienes un "switchTab('media')" o click de nav, ponlo ahí.
+     * Si no, ponlo al cargar la página:
+     */
+    loadSubtiposForMediaSelect();
+
 
     // =======================
     // USERS
