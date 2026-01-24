@@ -51,10 +51,6 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-const adminSubtipos = require('./routes/admin_subtipos');
-console.log('[admin_subtipos] typeof:', typeof adminSubtipos, adminSubtipos);
-app.use('/api', adminSubtipos);
-
 
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
@@ -128,7 +124,6 @@ app.use('/api', require('./routes/imagenes_subtipos'));
 app.use('/api', require('./routes/users'));
 app.use('/api', require('./routes/admin_users'));
 app.use('/api', require('./routes/pricing'));
-app.use('/api', require('./routes/admin_subtipos'));
 
 
 /* ---------- 404 & errores ---------- */

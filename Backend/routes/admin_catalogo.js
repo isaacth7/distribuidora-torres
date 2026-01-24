@@ -295,4 +295,50 @@ router.delete('/admin/bolsas/:id',
   }
 );
 
+/* ========== SUBTIPOS_BOLSAS (LISTAR GLOBAL p/ selects) ========== */
+/**
+ * GET /api/admin/subtipos-bolsas
+ * Opcional:
+ *   - ?q=texto (busca por subtipo o tipo)
+ *   - ?id_tipo_bolsa=4 (filtra por tipo)
+ * Respuesta: { items: [{ id_subtipo_bolsa, nombre_subtipo_bolsa, id_tipo_bolsa, nombre_tipo_bolsa }] }
+ */
+router.get(
+  '/admin/subtipos-bolsas',
+  auth,
+  isRole(ADMIN),
+  [
+    query('q').optional().trim().isLength({ max: 80 }).withMessage('q muy largo'),
+    query('id_tipo_bolsa').optional().isInt({ min: 1 }).withMessage('id_tipo_bolsa inválido'),
+  ],
+  validate,
+  async (req, res) => {
+    const q = (req.query.q || '').trim();
+    const idTipo = req.query.id_tipo_bolsa ? parseInt(req.query.id_tipo_bolsa, 10) : null;
+
+    try {
+      const sql = `
+        SELECT
+          st.id_subtipo_bolsa,
+          st.nombre_subtipo_bolsa,
+          st.id_tipo_bolsa,
+          tb.nombre_bolsa AS nombre_tipo_bolsa
+        FROM subtipos_bolsas st
+        JOIN tipo_bolsa tb ON tb.id_tipo_bolsa = st.id_tipo_bolsa
+        WHERE
+          ($1 = '' OR st.nombre_subtipo_bolsa ILIKE '%' || $1 || '%' OR tb.nombre_bolsa ILIKE '%' || $1 || '%')
+          AND ($2::int IS NULL OR st.id_tipo_bolsa = $2::int)
+        ORDER BY tb.nombre_bolsa ASC, st.nombre_subtipo_bolsa ASC;
+      `;
+
+      const { rows } = await pool.query(sql, [q, idTipo]);
+      return res.json({ items: rows });
+    } catch (e) {
+      console.error('[GET /api/admin/subtipos-bolsas]', e);
+      return res.status(500).json({ error: 'No se pudo listar subtipos' });
+    }
+  }
+);
+
+
 module.exports = router;
