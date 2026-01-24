@@ -76,36 +76,40 @@
         <div class="menu_overlay" hidden></div>
     </div>
 
-    <main class="pd-wrapper">
+    <main class="pd-wrapper" aria-busy="true">
+    <!-- LOADER -->
+    <div id="pdLoading" class="pd-loading">
+        <div class="pd-spinner" aria-hidden="true"></div>
+        <p class="pd-loading-text">Cargando producto...</p>
+    </div>
+
+    <!-- CONTENIDO REAL (inicia oculto) -->
+    <div id="pdContent" hidden>
         <!-- Columna izquierda: galería vertical -->
-        <section class="pd-col-left">
-            <figure class="pd-photo"><img src="../Images/imagenejemplo.jpeg" alt="Bolsa vista principal"></figure>
-            <figure class="pd-photo"><img src="../Images/Carrusel-3.jpg" alt="Uso de la bolsa"></figure>
-            <figure class="pd-photo"><img src="../Images/imagen_encabezado.jpeg" alt="Detalle de la bolsa"></figure>
+        <section class="pd-col-left" id="pdGallery">
+            <!-- NOTA: idealmente deja vacío y lo llena JS -->
         </section>
 
         <!-- Columna derecha: especificaciones -->
         <section class="pd-col-right">
-            <h1 class="pd-title">Bolsa Agarradera</h1>
+            <h1 class="pd-title" id="pdTitle"></h1>
 
             <div class="pd-field">
                 <span class="pd-label">Subtipo:</span>
-                <!-- antes: <div class="pd-control"><select class="pd-select"> -->
                 <div class="pd-control">
                     <select id="selSubtipo" class="pd-select"></select>
                 </div>
-
             </div>
 
             <div class="pd-field">
                 <span id="priceLabel" class="pd-label">Precio por kilo:</span>
-                <span class="pd-value" id="lblPrice">0₡</span>
+                <span class="pd-value" id="lblPrice">—</span>
             </div>
 
             <div class="pd-field">
                 <label class="pd-label" for="selTam">Tamaño:</label>
                 <div class="pd-control">
-                    <select id="selTam" class="pd-select">
+                    <select id="selTam" class="pd-select" disabled>
                         <option>—</option>
                     </select>
                 </div>
@@ -115,13 +119,11 @@
                 <span id="qtyLabel" class="pd-label">Cantidad (kilos):</span>
                 <div class="pd-stepper" aria-label="Cantidad">
                     <button type="button" class="pd-stepper-btn" aria-label="Restar">−</button>
-                    <!-- input “invisible” a nivel de estilos; se verá como el 0 del diseño -->
                     <input id="pdQtyInput" class="pd-stepper-value" type="number" inputmode="decimal" step="0.25"
                         min="0.25" value="0.25" aria-label="Cantidad" />
                     <button type="button" class="pd-stepper-btn" aria-label="Sumar">+</button>
                 </div>
             </div>
-
 
             <div class="pd-field" id="packRow" style="display:none">
                 <label id="lblPack" class="pd-label" for="selPack">Presentación:</label>
@@ -132,56 +134,22 @@
 
             <div id="pdNote" class="pd-note" style="margin:.5rem 0 0;color:#666;"></div>
 
-
             <div class="pd-field">
                 <span class="pd-label">Subtotal:</span>
-                <strong class="pd-subtotal">0₡</strong>
+                <strong class="pd-subtotal" id="pdSubtotal">—</strong>
             </div>
 
             <h3 class="pd-subtitle">Descripción:</h3>
-            <p class="pd-desc">
-                La bolsa de agarradera tipo biodegradable mediana es la bolsa perfecta para cargar objetos
-                ni muy pequeños ni muy grandes, es una bolsa resistente, mide 10 pulgadas de ancho y 20 de
-                largo, y cuenta con la ventaja de ser una bolsa amigable con el ambiente.
-            </p>
+            <p class="pd-desc" id="pdDesc"></p>
 
-            <button class="pd-add-btn" type="button">Agregar a la Bolsa</button>
+            <button class="pd-add-btn" id="btnAddToCart" type="button" disabled>Agregar a la Bolsa</button>
 
-            <ul class="pd-benefits" aria-label="Beneficios de la tienda">
-                <li class="benefit">
-                    <span class="b-icon" aria-hidden="true">
-                        <img src="../Images/icono_envio.svg" alt="">
-                    </span>
-                    <div class="b-copy">
-                        <h4>Envío Gratis</h4>
-                        <p>Por compras superiores a 20.000₡</p>
-                    </div>
-                </li>
-
-                <li class="benefit">
-                    <span class="b-icon" aria-hidden="true">
-                        <img src="../Images/icono_servicio.svg" alt="">
-                    </span>
-                    <div class="b-copy">
-                        <h4>Respuesta Rápida</h4>
-                        <p>Te atenderemos en el menor tiempo posible</p>
-                    </div>
-                </li>
-
-                <li class="benefit">
-                    <span class="b-icon" aria-hidden="true">
-                        <img src="../Images/icono_amigables.svg" alt="">
-                    </span>
-                    <div class="b-copy">
-                        <h4>Eco-Friendly</h4>
-                        <p>Todos nuestros productos son amigables con el ambiente.</p>
-                    </div>
-                </li>
-            </ul>
-
-
+            <!-- tus benefits se quedan igual -->
+            ...
         </section>
-    </main>
+    </div>
+</main>
+
 
     <section class="pd-reco-band" aria-labelledby="recoTitle">
         <div class="reco-inner">
