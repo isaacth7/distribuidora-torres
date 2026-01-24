@@ -272,7 +272,7 @@
              *  - /api/subtipos
              *  - /api/catalogo/subtipos
              */
-            const r = await apiFetchPublic(`/api/admin/subtipos`, { method: 'GET', auth: true });
+            const r = await apiFetchPublic(`/api/admin/subtipos-bolsas`, { method: 'GET', auth: true });
             if (!r.ok) throw new Error(r.data?.error || `HTTP ${r.status}`);
 
             const items = r.data?.items || r.data || [];
