@@ -286,12 +286,26 @@
             mediaSubtipoSelect.innerHTML = `
       <option value="" selected disabled>Selecciona un subtipo…</option>
       ${items.map(s => {
-                const id = s.id_subtipo ?? s.id ?? '';
-                const nombre = s.nombre_subtipo ?? s.nombre ?? `Subtipo #${id}`;
-                const tipo = s.tipo ?? s.nombre_tipo ?? '';
+                const id = s.id_subtipo_bolsa ?? s.id_subtipo ?? s.id ?? '';
+                const nombre =
+                    s.nombre_subtipo_bolsa ??
+                    s.nombre_subtipo ??
+                    s.subtipo_nombre ??
+                    s.nombre ??
+                    `Subtipo #${id || '?'}`;
+
+                // nombres posibles del tipo
+                const tipo =
+                    s.tipo_nombre ??
+                    s.nombre_bolsa ??
+                    s.nombre_tipo ??
+                    s.tipo ??
+                    '';
+
                 const label = tipo ? `${tipo} — ${nombre}` : nombre;
                 return `<option value="${id}">${label}</option>`;
             }).join('')}
+
     `;
 
             mediaSubtipoSelect.dataset.loaded = '1';
