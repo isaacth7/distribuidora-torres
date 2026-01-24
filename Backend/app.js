@@ -51,6 +51,11 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
+const adminSubtipos = require('./routes/admin_subtipos');
+console.log('[admin_subtipos] typeof:', typeof adminSubtipos, adminSubtipos);
+app.use('/api', adminSubtipos);
+
+
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 
