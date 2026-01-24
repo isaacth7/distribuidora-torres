@@ -82,9 +82,38 @@ const el = {
   lblPack:    $('#lblPack'),
   priceLabel: $('#priceLabel'),
   qtyLabel:   $('#qtyLabel'),
+
+  // ✅ NUEVO: loader + content wrapper (deben existir en el HTML)
+  loading: document.getElementById('pdLoading'),
+  content: document.getElementById('pdContent'),
 };
+
 const show = x => x && (x.style.display = '');
 const hide = x => x && (x.style.display = 'none');
+
+// ✅ NUEVO: controla loader + evita flash de contenido de prueba
+function pdSetLoading(isLoading, msg = null) {
+  const wrap = document.querySelector('.pd-wrapper');
+  if (wrap) wrap.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+
+  if (el.loading) {
+    el.loading.hidden = !isLoading;
+
+    if (msg != null) {
+      // opcional: si tu loader tiene un <p class="pd-loading-text">...
+      const p = el.loading.querySelector('.pd-loading-text');
+      if (p) p.textContent = msg;
+    }
+  }
+
+  if (el.content) el.content.hidden = isLoading;
+
+  // mientras carga, deshabilitar interacción
+  if (el.addBtn) el.addBtn.disabled = true;
+  if (el.selSub) el.selSub.disabled = true;
+  if (el.selTam) el.selTam.disabled = true;
+  if (el.selPack) el.selPack.disabled = true;
+}
 
 // ---------- Estado ----------
 const qs = new URLSearchParams(location.search);
@@ -280,6 +309,7 @@ function configureUIForPricing() {
       show(el.packRow); show(el.selPack); show(el.lblPack);
       packQty = Number(el.selPack.value || 0);
     }
+    return;
   }
 
   if (pricing.estrategia === 'por_unidad') {
@@ -341,24 +371,27 @@ function renderPrecioYSubtotal() {
 
 // ---------- Cambios de selección ----------
 async function onSubtipoChange(newId) {
-  if (el.selSub) el.selSub.disabled = true;
-  if (el.selTam) el.selTam.disabled = true;
+  // ✅ Mientras cambia, mantené loading (evita flashes si hay cambios rápidos)
+  pdSetLoading(true, 'Cargando producto...');
 
   try {
     selectedSub = subtipos.find(s => Number(s.id_subtipo_bolsa) === Number(newId)) || null;
+
     await loadVariantesBySubtipo(newId);
 
     if (!variantes.length) {
       if (el.selTam) el.selTam.innerHTML = '<option>Sin tamaños</option>';
-      if (el.addBtn) el.addBtn.disabled = true;
       renderDesc(); renderPrecioYSubtotal(); renderImgs([]);
+      // mostrar contenido aunque esté vacío, o dejar loader con error (tu decides)
+      pdSetLoading(false);
+      if (el.addBtn) el.addBtn.disabled = true;
       return;
     }
 
-    if (el.addBtn) el.addBtn.disabled = false;
-
     // elige primera variante con id válido
     selectedBolsa = variantes.find(v => !isNaN(getBolsaId(v))) || variantes[0];
+
+    renderSubtipos();
     renderTamanos();
     renderDesc();
 
@@ -372,14 +405,28 @@ async function onSubtipoChange(newId) {
 
     const imgs = await loadImgsBySubtipo(newId);
     renderImgs(imgs);
-  } finally {
+
+    // ✅ Ya hay datos reales + (posibles) imágenes => mostrar contenido real y habilitar interacción
+    pdSetLoading(false);
+    if (el.addBtn) el.addBtn.disabled = false;
     if (el.selSub) el.selSub.disabled = false;
     if (el.selTam) el.selTam.disabled = false;
+    if (el.selPack) el.selPack.disabled = false;
+
+  } catch (e) {
+    console.error('onSubtipoChange error', e);
+    // deja loader con mensaje de error sencillo
+    pdSetLoading(true, 'Error cargando el producto');
+    // opcional: mostrar contenido vacío en vez de loader
+    // pdSetLoading(false);
   }
 }
 
 function renderImgs(urls = []) {
   const list = urls.length ? urls : ['../Images/placeholder.png'];
+  // Si no hay imgs en el DOM (porque decidiste generarlas dinámicamente), no revienta
+  if (!el.imgs || !el.imgs.length) return;
+
   for (let i = 0; i < el.imgs.length; i++) {
     el.imgs[i].src = list[Math.min(i, list.length - 1)];
     el.imgs[i].alt = selectedSub?.nombre_subtipo_bolsa || 'Producto';
@@ -394,12 +441,16 @@ if (el.selTam) el.selTam.addEventListener('change', async e => {
   selectedBolsa = variantes.find(v => getBolsaId(v) === id) || selectedBolsa;
   renderDesc();
 
+  // opcional: loader solo si tu pricing tarda mucho; normalmente no hace falta
+  // pdSetLoading(true, 'Actualizando...');
   const sbId = getBolsaId(selectedBolsa);
   await loadPricingForBolsa(sbId);
 
   const isKg = pricing?.estrategia === 'por_kg' && !pricing.es_peso_variable;
   setQty(isKg ? 0.25 : 1);
   applyQtyAttrs();
+  renderPrecioYSubtotal();
+  // pdSetLoading(false);
 });
 
 if (el.selPack) el.selPack.addEventListener('change', e => {
@@ -424,45 +475,68 @@ if (el.qtyIn) {
 
 // ---------- Boot ----------
 (async function init() {
+  // ✅ Arranca ocultando el contenido para evitar flash de datos de prueba
+  pdSetLoading(true, 'Cargando producto...');
+
   await loadTipos();
 
-  if (qTipo) {
-    setTitleTipo(qTipo);
-    await loadSubtiposByTipo(qTipo);
-    if (!subtipos.length) { if (el.selSub) el.selSub.innerHTML = '<option>Sin subtipos</option>'; return; }
+  try {
+    if (qTipo) {
+      setTitleTipo(qTipo);
+      await loadSubtiposByTipo(qTipo);
 
-    selectedSub = subtipos.find(s => String(s.id_subtipo_bolsa) === String(qSubtipo)) || subtipos[0];
-    renderSubtipos();
-    await onSubtipoChange(selectedSub.id_subtipo_bolsa);
-    return;
+      if (!subtipos.length) {
+        if (el.selSub) el.selSub.innerHTML = '<option>Sin subtipos</option>';
+        pdSetLoading(true, 'No hay subtipos disponibles');
+        return;
+      }
+
+      selectedSub = subtipos.find(s => String(s.id_subtipo_bolsa) === String(qSubtipo)) || subtipos[0];
+      renderSubtipos();
+
+      await onSubtipoChange(selectedSub.id_subtipo_bolsa);
+      return;
+    }
+
+    if (qSubtipo) {
+      await loadVariantesBySubtipo(qSubtipo);
+
+      if (!variantes.length) {
+        if (el.selSub) el.selSub.innerHTML = '<option>Sin subtipos</option>';
+        pdSetLoading(true, 'No hay variantes disponibles');
+        return;
+      }
+
+      selectedBolsa = variantes.find(v => !isNaN(getBolsaId(v))) || variantes[0];
+      const tipoId = getTipoId(selectedBolsa);
+      setTitleTipo(tipoId);
+
+      await loadSubtiposByTipo(tipoId);
+      selectedSub = subtipos.find(s => Number(s.id_subtipo_bolsa) === Number(qSubtipo)) || subtipos[0];
+      renderSubtipos();
+
+      await onSubtipoChange(selectedSub.id_subtipo_bolsa);
+      return;
+    }
+
+    // Sin parámetros (no hay qué cargar)
+    if (el.title) el.title.textContent = 'Producto';
+    if (el.selSub) el.selSub.innerHTML = '<option>Seleccione una categoría</option>';
+
+    // ✅ en este caso, podés mostrar contenido vacío o mantener loader oculto.
+    pdSetLoading(false);
+
+  } catch (e) {
+    console.error('init error', e);
+    pdSetLoading(true, 'Error inicializando la página');
   }
-
-  if (qSubtipo) {
-    await loadVariantesBySubtipo(qSubtipo);
-    if (!variantes.length) { if (el.selSub) el.selSub.innerHTML = '<option>Sin subtipos</option>'; return; }
-
-    selectedBolsa = variantes.find(v => !isNaN(getBolsaId(v))) || variantes[0];
-    const tipoId = getTipoId(selectedBolsa);
-    setTitleTipo(tipoId);
-
-    await loadSubtiposByTipo(tipoId);
-    selectedSub = subtipos.find(s => Number(s.id_subtipo_bolsa) === Number(qSubtipo)) || subtipos[0];
-    renderSubtipos();
-    await onSubtipoChange(selectedSub.id_subtipo_bolsa);
-    return;
-  }
-
-  // Sin parámetros
-  if (el.title) el.title.textContent = 'Producto';
-  if (el.selSub) el.selSub.innerHTML = '<option>Seleccione una categoría</option>';
 })();
-
 
 // === Add-to-cart ===
 
 // === Cantidad según tu estrategia de pricing (negocio actual: unidades / kg / rollos) ===
 function resolveCantidadParaBackend() {
-  if (pricing?.estrategia === 'por_kg' && !pricing.es_peso_variable) return Number(qty);               // kg
+  if (pricing?.estrategia === 'por_kg' && !pricing.es_peso_variable) return Number(qty);                     // kg
   if (pricing?.estrategia === 'por_kg' &&  pricing.es_peso_variable) return Math.max(1, Math.round(qty || 1)); // rollos
   return Math.max(1, Math.round(qty || 1)); // unidades
 }
@@ -483,14 +557,12 @@ async function addCurrentToCart() {
     if (!ok) throw new Error(data?.error || `No se pudo agregar al carrito (HTTP ${status})`);
 
     await updateCartBadge();
-    showToast('Artículo agregado a la bolsa', 'success');   // ← aquí el mensaje 👍
-    // Opcional: ligera vibración en móviles
+    showToast('Artículo agregado a la bolsa', 'success');
     if (navigator.vibrate) navigator.vibrate(20);
   } catch (err) {
     showToast(err.message || 'No se pudo agregar al carrito', 'error');
   }
 }
-
 
 function bindCartButton() {
   // re-toma la referencia por si al inicio era null
@@ -505,7 +577,7 @@ if (document.readyState === 'loading') {
   bindCartButton();
 }
 
-//Funcion que muestra el mensaje de exito o error al agregar al carrito
+// Funcion que muestra el mensaje de exito o error al agregar al carrito
 function showToast(message, type = 'success') {
   let t = document.getElementById('pdToast');
   if (!t) {
@@ -522,5 +594,3 @@ function showToast(message, type = 'success') {
   clearTimeout(window.__pdToastTimer);
   window.__pdToastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
-
-
