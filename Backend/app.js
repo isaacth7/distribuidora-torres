@@ -123,7 +123,7 @@ app.use('/api', require('./routes/imagenes_subtipos'));
 app.use('/api', require('./routes/users'));
 app.use('/api', require('./routes/admin_users'));
 app.use('/api', require('./routes/pricing'));
-app.use('/api/admin', require('./routes/admin_subtipos'));
+app.use('/api', require('./routes/admin_subtipos'));
 
 
 /* ---------- 404 & errores ---------- */
