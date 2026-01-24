@@ -241,3 +241,29 @@
 
 .logout-confirm{margin-top:8px;padding:10px;border:1px solid #f2b8b5;background:#fff4f4;border-radius:10px}
 .logout-confirm .actions{display:flex;gap:8px;margin-top:6px}
+
+/* ===== FIX: textos largos en perfil (mobile) ===== */
+.auth-user .info{
+  min-width: 0;              /* CLAVE: permite encogerse en grid */
+}
+
+.auth-user .hello,
+.auth-user .email{
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.auth-user .hello{
+  white-space: nowrap;       /* evita que rompa el layout */
+}
+
+.auth-user .email{
+  white-space: nowrap;       /* email en una línea con ... */
+  display: block;
+}
+
+/* por si algún navegador raro ignora el grid shrink */
+.auth-user{
+  overflow: hidden;
+}
