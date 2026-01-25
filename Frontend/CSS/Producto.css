@@ -437,12 +437,7 @@ h1,h2,h3,.titulo_encabezado { font-family: var(--font-title); font-weight: 700; 
   max-width: 1200px;
   margin: 40px auto;
   padding: 0 16px;
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 0px;
-  align-items: start;
-  column-gap: 64px;
+  position: relative; /* para el overlay del loader */
 }
 
 #pdContent{
