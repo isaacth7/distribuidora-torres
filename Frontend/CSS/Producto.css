@@ -626,6 +626,26 @@ h1,h2,h3,.titulo_encabezado { font-family: var(--font-title); font-weight: 700; 
 #pdToast.success { background:var(--c-brand); }
 #pdToast.error { background:#b00020; }
 
+/* Contenedor relativo para overlay */
+.pd-wrapper{ position: relative; }
+
+/* El loader ocupa encima del contenido, no rompe columnas */
+.pd-loading{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: rgba(255,255,255,.75); /* leve blur/velo */
+  backdrop-filter: blur(2px);
+  z-index: 50;
+}
+
+/* ✅ IMPORTANTÍSIMO: que hidden SIEMPRE oculte */
+#pdLoading[hidden]{ display: none !important; }
+#pdContent[hidden]{ display: none !important; }
+
+
 
 /* ============== 7) PRODUCTOS RECOMENDADOS ============== */
 .pd-reco-band{
