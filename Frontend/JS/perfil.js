@@ -457,14 +457,14 @@
     const puedeSubir = (estadoSlug === 'pendiente_pago');
 
     const subirHTML = puedeSubir ? `
-      <div class="pf-row">
-        <label>Subir comprobante (imagen o PDF)
-          <input type="file" id="odComprobante" accept="image/*,application/pdf">
-        </label>
-      </div>
-      <div class="pf-actions">
-        <button type="button" class="pf-btn primary" id="odUploadBtn">Enviar comprobante</button>
-      </div>` : '';
+  <div class="od-upload">
+    <label>
+      Subir comprobante (imagen o PDF)
+      <input type="file" id="odComprobante" accept="image/*,application/pdf">
+    </label>
+    <button type="button" class="pf-btn primary" id="odUploadBtn">Enviar comprobante</button>
+  </div>
+` : '';
 
     $('#odBody', dlg).innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
@@ -488,8 +488,8 @@
 
       <div class="pf-sheet" style="box-shadow:none;padding:16px;">
         <h4 style="margin:0 0 10px;">Artículos</h4>
-        <div style="overflow:auto;">
-          <table style="width:100%;border-collapse:collapse;">
+          <div class="od-table-wrap">
+            <table style="width:100%;border-collapse:collapse;">
             <thead>
               <tr style="text-align:left;border-bottom:1px solid var(--border);">
                 <th style="padding:8px 4px;">Producto</th>
