@@ -694,3 +694,166 @@ body {
   max-width: none;
 }
 
+/* =========================
+   FIX: Modal detalle orden (móvil) - overflow contenido
+   Pegar AL FINAL del CSS
+   ========================= */
+
+/* 1) El dialog no debe crecer raro en móvil */
+.pf-dialog{
+  width: min(980px, 96vw);
+  max-height: min(86vh, 760px);
+  overflow: hidden;           /* 🔑 el overflow NO en el dialog */
+  border-radius: 16px;
+}
+
+/* 2) El form interno usa todo el ancho y scrollea VERTICAL */
+.pf-dialog > form{
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 16px;
+  max-height: inherit;
+  overflow: auto;             /* ✅ scroll vertical aquí */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 3) Asegura que el body del modal no se quede estrecho */
+.pf-dialog #odBody{
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+/* 4) Cards internas nunca deben “salirse” */
+.pf-dialog .pf-sheet,
+.pf-dialog .pf-card,
+.pf-dialog .od-totals-card{
+  width: 100%;
+  max-width: none;
+  min-width: 0;               /* 🔑 permite encogerse */
+}
+
+/* =========================
+   TABLA: overflow horizontal SOLO dentro del bloque
+   ========================= */
+
+/* Opción A (SIN tocar HTML): tabla scrollea horizontal */
+.pf-dialog .od-table{
+  display: block;             /* permite overflow-x */
+  width: 100%;
+  overflow-x: auto;           /* ✅ scroll horizontal en la tabla */
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mantiene estructura de tabla dentro del block */
+.pf-dialog .od-table thead,
+.pf-dialog .od-table tbody,
+.pf-dialog .od-table tr{
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* La tabla necesita un mínimo para no aplastar columnas */
+.pf-dialog .od-table{
+  min-width: 640px;           /* ajusta si querés */
+  border-collapse: collapse;
+}
+
+/* Evita que números hagan wrap raro */
+.pf-dialog .od-num,
+.pf-dialog .od-mono{
+  white-space: nowrap;
+}
+
+/* Header de tabla pegajoso cuando scrolleas */
+.pf-dialog .od-table thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fafafa;
+}
+
+/* =========================
+   TOTALES: que NO rompa el grid en móvil
+   ========================= */
+
+.od-totals{
+  grid-template-columns: 1fr minmax(240px, 320px);
+  align-items: start;
+}
+
+@media (max-width: 960px){
+  .od-totals{
+    grid-template-columns: 1fr; /* ✅ una sola columna */
+  }
+}
+
+/* Dentro del card de totales: si algo se pasa, que scrollee ahí */
+.od-totals-card{
+  overflow-x: auto;           /* ✅ scroll horizontal SOLO en ese card */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* El key-value no debe empujar el layout */
+.od-kv{
+  min-width: 520px;           /* para que exista overflow en móvil */
+  grid-template-columns: minmax(0, 1fr) auto; /* 🔑 label encoge, valor fijo */
+}
+
+/* Labels pueden partir (no empujan todo) */
+.od-kv > div{
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Valores siempre alineados y sin wrap */
+.od-kv > div:nth-child(2n){
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================
+   COMPROBANTES: que no se desborden
+   ========================= */
+
+.od-proofs,
+.od-proofs-list{
+  min-width: 0;
+}
+
+.od-proof{
+  gap: 10px;
+  min-width: 0;
+}
+
+.od-proof > *{
+  min-width: 0;
+}
+
+/* Si el nombre del comprobante es largo, que corte bonito */
+.od-proof .name,
+.od-proof .filename{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================
+   FIX EXTRA: evita que el logo/header gigantes rompan móvil
+   (Tu CSS tiene .pf-brand img height: 200px; eso es demasiado)
+   ========================= */
+
+.pf-brand img{
+  height: 44px !important;   /* tamaño sano por defecto */
+  width: auto !important;
+}
+
+@media (min-width: 961px){
+  .pf-brand img{
+    height: 64px !important; /* desktop */
+  }
+}
