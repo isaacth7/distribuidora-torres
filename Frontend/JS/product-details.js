@@ -366,7 +366,6 @@ function renderPrecioYSubtotal() {
 
 // ---------- Cambios de selección ----------
 async function onSubtipoChange(newId) {
-  // ✅ Mientras cambia, mantené loading (evita flashes si hay cambios rápidos)
   pdSetLoading(true, 'Cargando producto...');
 
   try {
@@ -377,13 +376,10 @@ async function onSubtipoChange(newId) {
     if (!variantes.length) {
       if (el.selTam) el.selTam.innerHTML = '<option>Sin tamaños</option>';
       renderDesc(); renderPrecioYSubtotal(); renderImgs([]);
-      // mostrar contenido aunque esté vacío, o dejar loader con error (tu decides)
-      pdSetLoading(false);
       if (el.addBtn) el.addBtn.disabled = true;
       return;
     }
 
-    // elige primera variante con id válido
     selectedBolsa = variantes.find(v => !isNaN(getBolsaId(v))) || variantes[0];
 
     renderSubtipos();
@@ -401,21 +397,26 @@ async function onSubtipoChange(newId) {
     const imgs = await loadImgsBySubtipo(newId);
     renderImgs(imgs);
 
-    // ✅ Ya hay datos reales + (posibles) imágenes => mostrar contenido real y habilitar interacción
-    pdSetLoading(false);
     if (el.addBtn) el.addBtn.disabled = false;
-    if (el.selSub) el.selSub.disabled = false;
-    if (el.selTam) el.selTam.disabled = false;
-    if (el.selPack) el.selPack.disabled = false;
 
   } catch (e) {
     console.error('onSubtipoChange error', e);
-    // deja loader con mensaje de error sencillo
-    pdSetLoading(true, 'Error cargando el producto');
-    // opcional: mostrar contenido vacío en vez de loader
-    // pdSetLoading(false);
+    // ✅ muestra contenido aunque haya error para que no se quede pegado
+    renderImgs([]);
+    if (el.addBtn) el.addBtn.disabled = true;
+
+    // opcional: mensaje visible en la página
+    const note = document.getElementById('pdNote');
+    if (note) note.textContent = 'No se pudo cargar el producto. Intenta de nuevo.';
+  } finally {
+    // ✅ SIEMPRE apagar loader
+    pdSetLoading(false);
+    if (el.selSub) el.selSub.disabled = false;
+    if (el.selTam) el.selTam.disabled = false;
+    if (el.selPack) el.selPack.disabled = false;
   }
 }
+
 
 function renderImgs(urls = []) {
   const gallery = document.getElementById('pdGallery');
