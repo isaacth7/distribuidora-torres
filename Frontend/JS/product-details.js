@@ -94,25 +94,20 @@ const hide = x => x && (x.style.display = 'none');
 // ✅ NUEVO: controla loader + evita flash de contenido de prueba
 function pdSetLoading(isLoading, msg = null) {
   const wrap = document.querySelector('.pd-wrapper');
+  const loading = document.getElementById('pdLoading');
+  const content = document.getElementById('pdContent');
+
   if (wrap) wrap.setAttribute('aria-busy', isLoading ? 'true' : 'false');
 
-  if (el.loading) {
-    el.loading.hidden = !isLoading;
-
+  if (loading) {
+    loading.hidden = !isLoading;
     if (msg != null) {
-      // opcional: si tu loader tiene un <p class="pd-loading-text">...
-      const p = el.loading.querySelector('.pd-loading-text');
+      const p = loading.querySelector('.pd-loading-text');
       if (p) p.textContent = msg;
     }
   }
 
-  if (el.content) el.content.hidden = isLoading;
-
-  // mientras carga, deshabilitar interacción
-  if (el.addBtn) el.addBtn.disabled = true;
-  if (el.selSub) el.selSub.disabled = true;
-  if (el.selTam) el.selTam.disabled = true;
-  if (el.selPack) el.selPack.disabled = true;
+  if (content) content.hidden = isLoading;
 }
 
 // ---------- Estado ----------
