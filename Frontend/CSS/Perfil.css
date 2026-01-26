@@ -376,11 +376,16 @@ body {
 }
 
 /* Dialog */
-.pf-dialog {
-  width: min(820px, 96vw);
+.pf-dialog{
+  width: auto !important;
+  max-width: min(980px, calc(100vw - 24px)) !important;
+  margin: 12px auto !important;
+  padding: 0 !important;
   border: none;
   border-radius: 16px;
-  padding: 18px;
+
+  /* 🔑 permite que el contenido tenga scroll */
+  max-height: calc(100dvh - 24px);
 }
 
 .pf-dialog::backdrop {
@@ -790,6 +795,13 @@ body {
   overflow: hidden;                 /* clave: nada “se sale” visualmente */
 }
 
+@supports (padding: max(0px)) {
+  .pf-dialog{
+    max-width: min(980px, calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right))) !important;
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+}
+
 /* iOS notch: que no choque con los bordes */
 @supports (padding: max(0px)) {
   .pf-dialog{
@@ -797,21 +809,31 @@ body {
   }
 }
 
-/* el form interno ocupa todo el modal */
 .pf-dialog > form{
   width: 100%;
   max-width: none;
   margin: 0;
   padding: 20px;
-  overflow: hidden; /* evita que un child empuje */
+
+  display: flex;
+  flex-direction: column;
+
+  /* 🔑 el form ocupa la altura disponible del dialog */
+  max-height: inherit;
 }
 
-/* el body interno tampoco empuja */
+
 .pf-dialog #odBody{
   width: 100%;
-  margin: 0;
-  overflow: hidden;
+  margin: 12px 0 0;
+
+  /* 🔑 scroll vertical del contenido */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-height: 0; /* importantísimo para que flex permita scroll */
 }
+
 
 /* Los cards del modal no deben “crear” ancho extra */
 .pf-dialog .pf-card,
@@ -820,3 +842,136 @@ body {
   overflow: hidden; /* si algo es largo, se recorta o hace wrap */
 }
 
+/* =========================
+   MODAL DETALLE PEDIDO (CLIENTE) — FINAL FIX
+   - Respeta ancho del modal
+   - Scroll vertical dentro del modal (en #odBody)
+   - Scroll horizontal solo en tabla (od-table-wrap)
+   - Upload no revienta
+   ========================= */
+
+/* Dialog: nunca se pasa del viewport + safe area iOS */
+.pf-dialog{
+  width: auto !important;
+  max-width: min(980px, calc(100vw - 24px)) !important;
+  margin: 12px auto !important;
+  padding: 0 !important;
+  border: none;
+  border-radius: 16px;
+  max-height: calc(100dvh - 24px);
+}
+
+@supports (padding: max(0px)) {
+  .pf-dialog{
+    max-width: min(
+      980px,
+      calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right))
+    ) !important;
+
+    max-height: calc(
+      100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+    );
+  }
+}
+
+.pf-dialog::backdrop{
+  background: rgba(0,0,0,.35);
+}
+
+/* El form es el “layout” del modal */
+.pf-dialog > form{
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  /* clave para que #odBody pueda scrollear */
+  max-height: inherit;
+  min-height: 0;
+}
+
+/* Aquí vive el scroll vertical */
+.pf-dialog #odBody{
+  width: 100%;
+  margin-top: 12px;
+
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+
+  flex: 1;
+  min-height: 0;
+}
+
+/* Totales: filas alineadas y sin salirse */
+.pf-dialog .pf-line{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+}
+.pf-dialog .pf-line span{ color: var(--muted); }
+.pf-dialog .pf-line strong{ justify-self: end; white-space: nowrap; }
+
+/* Tabla: scroll horizontal SOLO dentro del cuadro */
+.pf-dialog .od-table-wrap{
+  overflow: auto;
+  max-width: 100%;
+  border-radius: 12px;
+}
+.pf-dialog .od-table-wrap table{
+  min-width: 640px; /* fuerza scroll interno en móvil */
+}
+
+/* Comprobantes: links largos no rompen */
+.pf-dialog #odComps .pf-card{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.pf-dialog #odComps .pf-card a{
+  word-break: break-word;
+}
+
+/* Upload: grid que NO empuja el modal */
+.pf-dialog .od-upload{
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  min-width: 0;
+}
+.pf-dialog .od-upload label{
+  white-space: normal;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 14px;
+}
+.pf-dialog .od-upload input[type="file"]{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.pf-dialog .od-upload .pf-btn{
+  white-space: nowrap;
+  justify-self: end;
+}
+
+/* Móvil: upload en una columna */
+@media (max-width: 560px){
+  .pf-dialog .od-upload{
+    grid-template-columns: 1fr;
+  }
+  .pf-dialog .od-upload .pf-btn{
+    width: 100%;
+    justify-self: stretch;
+  }
+}
