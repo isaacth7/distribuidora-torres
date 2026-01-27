@@ -507,18 +507,10 @@
       </div>
 
       <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;">
-        <div class="pf-card od-totals-card">
+        <div class="pf-card od-totals-card ${((o.flags?.tiene_peso_variable || peso?.real_total_kg != null) ? 'od-has-weight' : '')}">
           <h4 class="od-sec-title">Totales</h4>
-          <div class="pf-card-list od-kv">
-            <div class="pf-line"><span>Subtotal (est. máx.)</span> <strong>${tot.subtotal_est_max != null ? fmtCRC(tot.subtotal_est_max) : '—'}</strong></div>
-            <div class="pf-line"><span>Subtotal final</span> <strong>${tot.subtotal_final != null ? fmtCRC(tot.subtotal_final) : '—'}</strong></div>
-            <div class="pf-line"><span>Descuento</span> <strong>− ${fmtCRC(tot.descuento_total || 0)}</strong></div>
-            <div class="pf-line"><span>Envío</span> <strong>${fmtCRC(tot.envio_total || 0)}</strong></div>
-            <div class="pf-line"><span>Impuestos</span> <strong>${fmtCRC(tot.impuesto_total || 0)}</strong></div>
-            <hr class="pf-sep thin">
-            <div class="pf-line" style="font-weight:900;"><span>Total</span> <strong>${fmtCRC(tot.gran_total || 0)}</strong></div>
-          </div>
-          ${(o.flags?.tiene_peso_variable || peso?.real_total_kg != null)
+
+          ${((o.flags?.tiene_peso_variable || peso?.real_total_kg != null)
             ? `<div class="od-weight">
                 <div class="od-weight-item">
                   <div class="od-weight-label">Peso máximo estimado</div>
@@ -528,9 +520,19 @@
                   <div class="od-weight-label">Peso real</div>
                   <div class="od-weight-value">${peso?.real_total_kg ?? '—'} <span>kg</span></div>
                 </div>
-              </div>` : ''}
+              </div>` : '')}
 
+          <div class="pf-card-list od-kv">
+            <div class="pf-line"><span>Subtotal (est. máx.)</span> <strong>${tot.subtotal_est_max != null ? fmtCRC(tot.subtotal_est_max) : '—'}</strong></div>
+            <div class="pf-line"><span>Subtotal final</span> <strong>${tot.subtotal_final != null ? fmtCRC(tot.subtotal_final) : '—'}</strong></div>
+            <div class="pf-line"><span>Descuento</span> <strong>− ${fmtCRC(tot.descuento_total || 0)}</strong></div>
+            <div class="pf-line"><span>Envío</span> <strong>${fmtCRC(tot.envio_total || 0)}</strong></div>
+            <div class="pf-line"><span>Impuestos</span> <strong>${fmtCRC(tot.impuesto_total || 0)}</strong></div>
+            <hr class="pf-sep thin">
+            <div class="pf-line od-total"><span>Total</span> <strong>${fmtCRC(tot.gran_total || 0)}</strong></div>
+          </div>
         </div>
+
 
         <div class="pf-card" style="padding:12px;">
           <h4 style="margin:0 0 8px;">Comprobantes</h4>

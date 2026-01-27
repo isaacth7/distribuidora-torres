@@ -978,3 +978,230 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   TOTALES + PESOS (PRO)
+   Pegar al FINAL
+   ========================= */
+
+/* Asegura que el card de Totales no se “reviente” */
+.pf-dialog .pf-card{
+  min-width: 0;
+}
+
+/* Totales: mantiene tu look de la primera imagen */
+.pf-dialog .pf-card-list{
+  display: grid;
+  gap: 10px;
+}
+
+.pf-dialog .pf-line{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 2px 0;
+}
+
+.pf-dialog .pf-line span{
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+}
+
+.pf-dialog .pf-line strong{
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ✅ Bloque de PESOS separado y “pro” (no compite con totales) */
+.pf-dialog .od-weight{
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.pf-dialog .od-weight-item{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fafafa;
+  padding: 10px 12px;
+
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pf-dialog .od-weight-label{
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pf-dialog .od-weight-value{
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.pf-dialog .od-weight-value span{
+  font-weight: 800;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* En pantallas un poquito más amplias: 2 “chips” lado a lado */
+@media (min-width: 520px){
+  .pf-dialog .od-weight{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* =========================
+   TOTALES PRO (grid + peso separado)
+   Pegar AL FINAL del CSS
+   ========================= */
+
+/* Base: card de totales limpio */
+.pf-dialog .od-totals-card{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* Cuando hay peso: en desktop se divide en 2 columnas */
+@media (min-width: 720px){
+  .pf-dialog .od-totals-card.od-has-weight{
+    grid-template-columns: 1fr minmax(260px, 320px);
+    grid-template-areas:
+      "title title"
+      "kv    weight";
+    column-gap: 18px;
+    row-gap: 12px;
+    align-items: start;
+  }
+
+  .pf-dialog .od-totals-card.od-has-weight .od-sec-title{ grid-area: title; }
+  .pf-dialog .od-totals-card.od-has-weight .od-kv{ grid-area: kv; }
+  .pf-dialog .od-totals-card.od-has-weight .od-weight{ grid-area: weight; }
+}
+
+/* En móvil: peso arriba (full width) y luego totales */
+@media (max-width: 719px){
+  .pf-dialog .od-totals-card.od-has-weight{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Totales: filas pro (no “pegadas”) */
+.pf-dialog .od-kv{
+  display: grid;
+  gap: 0;
+}
+
+.pf-dialog .od-kv .pf-line{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.pf-dialog .od-kv .pf-line + .pf-line{
+  border-top: 1px solid var(--border);
+}
+
+.pf-dialog .od-kv .pf-line span{
+  color: var(--muted);
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.pf-dialog .od-kv .pf-line strong{
+  justify-self: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Total destacado */
+.pf-dialog .od-kv .pf-line.od-total{
+  padding-top: 12px;
+  font-size: 15px;
+}
+.pf-dialog .od-kv .pf-line.od-total span,
+.pf-dialog .od-kv .pf-line.od-total strong{
+  color: var(--text);
+  font-weight: 900;
+}
+
+/* Peso: card separado y respirable */
+.pf-dialog .od-weight{
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fafafa;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.pf-dialog .od-weight-item{
+  border: 1px solid color-mix(in srgb, var(--border) 70%, white);
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.pf-dialog .od-weight-label{
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.pf-dialog .od-weight-value{
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.pf-dialog .od-weight-value span{
+  font-weight: 800;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Desktop: los dos “chips” de peso lado a lado (se ve muy pro) */
+@media (min-width: 900px){
+  .pf-dialog .od-weight{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* OPCIONAL: en móvil con peso, deja los totales con scroll interno (suave) */
+@media (max-width: 420px){
+  .pf-dialog .od-totals-card.od-has-weight .od-kv{
+    max-height: 220px;
+    overflow: auto;
+    padding-right: 6px; /* evita que el scrollbar tape números */
+    -webkit-overflow-scrolling: touch;
+  }
+}
