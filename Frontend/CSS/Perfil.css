@@ -890,3 +890,68 @@ html, body {
     max-width: 100% !important;
   }
 }
+
+/* =========================
+   TOTALES — layout más limpio y alineado
+   (pegar al FINAL)
+   ========================= */
+
+/* La lista de totales como tabla: filas prolijas */
+.pf-dialog .pf-card-list{
+  gap: 0 !important;
+}
+
+/* Cada fila: grid 2 columnas (label / monto) */
+.pf-dialog .pf-card-list .pf-line{
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 14px !important;
+  align-items: center !important;
+  padding: 10px 0 !important;
+}
+
+/* Separadores sutiles entre filas */
+.pf-dialog .pf-card-list .pf-line + .pf-line{
+  border-top: 1px solid var(--border);
+}
+
+/* Label: puede partirse sin empujar el monto */
+.pf-dialog .pf-card-list .pf-line span{
+  min-width: 0;
+  line-height: 1.25;
+}
+
+/* Monto: siempre alineado a la derecha */
+.pf-dialog .pf-card-list .pf-line strong{
+  justify-self: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Separador antes del Total: que no “rompa” el ritmo */
+.pf-dialog .pf-card-list .pf-sep.thin{
+  margin: 10px 0 !important;
+}
+
+/* Fila Total: más destacada */
+.pf-dialog .pf-card-list .pf-line[style*="font-weight:900"],
+.pf-dialog .pf-card-list .pf-line:last-of-type{
+  padding-top: 12px !important;
+  font-size: 15px;
+}
+
+/* Bloque de peso: estilo mini-card, ancho completo, bien acomodado */
+.pf-dialog .pf-card > div[style*="Peso máximo estimado"]{
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 12px !important;
+  padding: 10px 12px !important;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fafafa;
+
+  display: grid;
+  gap: 6px;
+  line-height: 1.25;
+}
