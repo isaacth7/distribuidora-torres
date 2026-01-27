@@ -836,3 +836,57 @@ html, body {
   }
 }
 
+/* =========================
+   FIX DEFINITIVO: sección Comprobantes
+   - No se rompe el ancho del modal
+   - Upload 100% dentro
+   - "Sin comprobantes aún" abajo a la izquierda
+   ========================= */
+
+/* 1) El card que contiene comprobantes debe ser columna (no fila) */
+.pf-dialog .pf-card:has(#odComps){
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+/* 2) Ambos bloques ocupan 100% del ancho del modal */
+.pf-dialog .pf-card:has(#odComps) > #odComps,
+.pf-dialog .pf-card:has(#odComps) > .od-upload{
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 3) Asegura que el upload nunca empuje el modal */
+.pf-dialog .pf-card:has(#odComps) .od-upload{
+  box-sizing: border-box !important;
+}
+
+/* 4) Cuando SOLO hay un card dentro de #odComps (caso vacío),
+      ponemos el upload primero y el mensaje después (abajo izquierda) */
+.pf-dialog #odComps:has(.pf-card:only-child){
+  order: 2 !important; /* el bloque #odComps va debajo */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important; /* izquierda */
+  gap: 0 !important;
+}
+
+.pf-dialog #odComps:has(.pf-card:only-child) .pf-card{
+  width: auto !important;
+  max-width: 70% !important;
+  margin: 10px 0 0 0 !important;   /* abajo */
+  padding: 10px 12px !important;
+}
+
+/* upload arriba cuando está vacío */
+.pf-dialog .pf-card:has(#odComps):has(#odComps:has(.pf-card:only-child)) > .od-upload{
+  order: 1 !important;
+}
+
+/* 5) En pantallas pequeñas: que el mensaje no quede apretado */
+@media (max-width: 520px){
+  .pf-dialog #odComps:has(.pf-card:only-child) .pf-card{
+    max-width: 100% !important;
+  }
+}
