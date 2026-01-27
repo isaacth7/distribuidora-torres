@@ -520,9 +520,15 @@
           </div>
           ${(o.flags?.tiene_peso_variable || peso?.real_total_kg != null)
         ? `<div class="od-weight">
-                 <div><strong>Peso máximo estimado:</strong> ${peso?.max_total_kg ?? '—'} kg</div>
-                 <div><strong>Peso real:</strong> ${peso?.real_total_kg ?? '—'} kg</div>
-               </div>` : ''}
+       <div class="od-weight-item">
+         <div class="od-weight-label">Peso máximo estimado</div>
+         <div class="od-weight-value">${peso?.max_total_kg ?? '—'} kg</div>
+       </div>
+       <div class="od-weight-item">
+         <div class="od-weight-label">Peso real</div>
+         <div class="od-weight-value">${peso?.real_total_kg ?? '—'} kg</div>
+       </div>
+     </div>` : ''}
         </div>
 
         <div class="pf-card" style="padding:12px;">

@@ -892,16 +892,15 @@ html, body {
 }
 
 /* =========================
-   TOTALES — layout más limpio y alineado
-   (pegar al FINAL)
+   TOTALES PRO + PESO PRO
+   (PEGAR AL FINAL)
    ========================= */
 
-/* La lista de totales como tabla: filas prolijas */
+/* Filas de Totales: grid limpio (label / monto) */
 .pf-dialog .pf-card-list{
   gap: 0 !important;
 }
 
-/* Cada fila: grid 2 columnas (label / monto) */
 .pf-dialog .pf-card-list .pf-line{
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
@@ -910,48 +909,72 @@ html, body {
   padding: 10px 0 !important;
 }
 
-/* Separadores sutiles entre filas */
+/* Línea divisoria suave entre filas */
 .pf-dialog .pf-card-list .pf-line + .pf-line{
   border-top: 1px solid var(--border);
 }
 
-/* Label: puede partirse sin empujar el monto */
 .pf-dialog .pf-card-list .pf-line span{
   min-width: 0;
   line-height: 1.25;
+  color: var(--muted);
 }
 
-/* Monto: siempre alineado a la derecha */
 .pf-dialog .pf-card-list .pf-line strong{
   justify-self: end;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 
-/* Separador antes del Total: que no “rompa” el ritmo */
-.pf-dialog .pf-card-list .pf-sep.thin{
-  margin: 10px 0 !important;
+/* Total más destacado */
+.pf-dialog .pf-card-list .pf-line[style*="font-weight:900"] span,
+.pf-dialog .pf-card-list .pf-line[style*="font-weight:900"] strong{
+  color: var(--text);
 }
-
-/* Fila Total: más destacada */
-.pf-dialog .pf-card-list .pf-line[style*="font-weight:900"],
-.pf-dialog .pf-card-list .pf-line:last-of-type{
+.pf-dialog .pf-card-list .pf-line[style*="font-weight:900"]{
   padding-top: 12px !important;
   font-size: 15px;
 }
 
-/* Bloque de peso: estilo mini-card, ancho completo, bien acomodado */
-.pf-dialog .pf-card > div[style*="Peso máximo estimado"]{
-  width: 100% !important;
-  box-sizing: border-box !important;
-  margin-top: 12px !important;
-  padding: 10px 12px !important;
-
+/* ===== PESO PRO (2 columnas) ===== */
+.pf-dialog .od-weight{
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: #fafafa;
 
   display: grid;
-  gap: 6px;
-  line-height: 1.25;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pf-dialog .od-weight-item{
+  border: 1px solid color-mix(in srgb, var(--border) 70%, white);
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 10px;
+  min-width: 0;
+}
+
+.pf-dialog .od-weight-label{
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.pf-dialog .od-weight-value{
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Móvil: peso en 1 columna */
+@media (max-width: 520px){
+  .pf-dialog .od-weight{
+    grid-template-columns: 1fr;
+  }
 }
