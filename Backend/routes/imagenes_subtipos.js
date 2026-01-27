@@ -5,10 +5,11 @@ const auth = require('../middlewares/auth');
 const { isRole } = require('../middlewares/roles');
 const validate = require('../middlewares/validate');
 const { body, param } = require('express-validator');
+const multer = require('multer');
+const cloudinary = require('../config/cloudinary');
 
 const fs = require('fs');
 const path = require('path');
-const multer = require('multer');
 
 const {
   listBySubtipoValidator,
@@ -41,10 +42,27 @@ const fileFilter = (_req, file, cb) => {
 };
 
 const upload = multer({
-  storage,
-  fileFilter,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (_req, file, cb) => {
+    const ok = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'].includes(file.mimetype);
+    cb(ok ? null : new Error('Tipo de archivo no permitido'), ok);
+  }
 });
+
+function uploadBufferToCloudinary(buffer, options = {}) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { resource_type: 'image', ...options },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    stream.end(buffer);
+  });
+}
+
 
 /* ========= Validadores mínimos para upload ========= */
 const uploadImageValidators = [
@@ -218,9 +236,9 @@ router.post(
   '/admin/subtipos/:id_subtipo/imagenes/upload',
   auth,
   isRole(ADMIN),
-  upload.single('file'),      // procesa archivo
-  uploadImageValidators,      // valida id_subtipo + opcionales
-  validate,                   // envía 400 si falla validación
+  upload.single('file'),
+  uploadImageValidators,
+  validate,
   async (req, res) => {
     try {
       const id_subtipo = parseInt(req.params.id_subtipo, 10);
@@ -228,10 +246,20 @@ router.post(
 
       if (!req.file) return res.status(400).json({ error: 'Archivo (file) es requerido' });
 
-      const chk = await pool.query('SELECT 1 FROM subtipos_bolsas WHERE id_subtipo_bolsa=$1', [id_subtipo]);
+      const chk = await pool.query(
+        'SELECT 1 FROM subtipos_bolsas WHERE id_subtipo_bolsa=$1',
+        [id_subtipo]
+      );
       if (!chk.rowCount) return res.status(400).json({ error: 'subtipo no existe' });
 
-      const publicUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      // ✅ Subir a Cloudinary
+      const result = await uploadBufferToCloudinary(req.file.buffer, {
+        folder: `distribuidora_torres/subtipos/${id_subtipo}`,
+        public_id: `${Date.now()}-${(req.file.originalname || 'imagen').replace(/\s+/g, '-').toLowerCase()}`,
+        overwrite: false,
+      });
+
+      const publicUrl = result.secure_url; // ✅ URL final HTTPS
 
       const { rows } = await pool.query(
         `INSERT INTO imagenes_subtipos (id_subtipo_bolsa, url_imagen, descripcion, orden)
@@ -243,11 +271,7 @@ router.post(
       res.status(201).json(rows[0]);
     } catch (e) {
       console.error(e);
-      // Limpieza opcional del archivo si falló algo
-      if (req.file) {
-        try { fs.unlinkSync(path.join(UPLOADS_DIR, req.file.filename)); } catch (_) {}
-      }
-      if (e instanceof multer.MulterError || e.message?.includes('Tipo de archivo')) {
+      if (e.message?.includes('Tipo de archivo')) {
         return res.status(400).json({ error: e.message });
       }
       res.status(500).json({ error: 'No se pudo subir la imagen' });
