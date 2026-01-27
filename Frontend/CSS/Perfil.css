@@ -751,3 +751,52 @@ html, body {
     justify-self: stretch;
   }
 }
+
+/* =========================
+   FIX FINAL: Upload NO rompe el ancho del modal
+   (pegar al FINAL)
+   ========================= */
+
+/* 1) El modal nunca permite overflow horizontal */
+.pf-dialog,
+.pf-dialog > form,
+.pf-dialog #odBody{
+  overflow-x: hidden !important;
+}
+
+/* 2) Todo dentro del modal puede encogerse */
+.pf-dialog *{
+  min-width: 0;
+}
+
+/* 3) Upload: que JAMÁS cree ancho extra */
+.pf-dialog .od-upload{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* 4) Label e input file: el file input es el culpable usual */
+.pf-dialog .od-upload label,
+.pf-dialog .od-upload input[type="file"]{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* 5) Asegura que el file input no se “salga” */
+.pf-dialog .od-upload input[type="file"]{
+  display: block;
+  box-sizing: border-box;
+}
+
+/* 6) En pantallas como tu screenshot: SIEMPRE una columna */
+@media (max-width: 520px){
+  .pf-dialog .od-upload{
+    grid-template-columns: 1fr !important;
+  }
+  .pf-dialog .od-upload .pf-btn{
+    width: 100%;
+    justify-self: stretch;
+  }
+}
