@@ -30,16 +30,15 @@
   --highlight: var(--c-highlight);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--text);
   background: var(--bg);
+  height: 100%;
+  overflow-y: auto; /* asegura scroll del documento */
 }
 
 /* Header */
@@ -54,23 +53,18 @@ body {
 }
 
 .pf-back{
-  font-size: 26px;     /* antes tamaño normal */
+  font-size: 26px;
   padding: 8px 10px;
   line-height: 1;
 }
-
-.pf-back:hover{
-  opacity: 0.7;
-}
+.pf-back:hover{ opacity: 0.7; }
 
 .pf-brand img {
   height: 32px;
   display: block;
 }
 
-.pf-spacer {
-  flex: 1;
-}
+.pf-spacer { flex: 1; }
 
 .pf-header-center {
   position: relative;
@@ -84,10 +78,8 @@ body {
 }
 
 .pf-header-center .pf-brand img{
-  height: 64px; /* antes 32px */
+  height: 64px;
 }
-
-
 
 /* Layout */
 .pf-layout {
@@ -141,10 +133,11 @@ body {
 .pf-nav-item.active {
   background: var(--surface);
   border: 1px solid var(--border);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+  box-shadow: 0 1px 0 rgba(0,0,0,.02);
+  color: var(--brand-strong);
 }
 
-/* Íconos del menú (reemplazo de emojis) */
+/* Íconos del menú */
 .pf-ico{
   width:22px;
   height:22px;
@@ -160,21 +153,8 @@ body {
   opacity:0.9;
 }
 
-/* Alineación más pro del item */
-.pf-nav-item{
-  gap:12px;
-}
-
-/* Activo: ícono y texto toman el color del brand */
-.pf-nav-item.active{
-  color: var(--brand-strong);
-}
-
-
 /* Contenido */
-.pf-content {
-  padding: 32px 40px;
-}
+.pf-content { padding: 32px 40px; }
 
 /* Sheet central */
 .pf-sheet {
@@ -184,7 +164,7 @@ body {
   padding: 28px;
   max-width: 940px;
   margin: 0 auto;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .04);
+  box-shadow: 0 10px 24px rgba(0,0,0,.04);
 }
 
 /* Head */
@@ -211,17 +191,10 @@ body {
 }
 
 /* Forms */
-.pf-form {
-  max-width: 840px;
-}
+.pf-form { max-width: 840px; }
+.pf-form-tight { max-width: 560px; }
 
-.pf-form-tight {
-  max-width: 560px;
-}
-
-.pf-row {
-  margin-bottom: 16px;
-}
+.pf-row { margin-bottom: 16px; }
 
 .pf-cols-2 {
   display: grid;
@@ -254,9 +227,7 @@ body {
 }
 
 /* Flag dentro del input */
-.pf-with-flag {
-  position: relative;
-}
+.pf-with-flag { position: relative; }
 
 .pf-flag {
   position: absolute;
@@ -286,14 +257,8 @@ body {
   gap: 12px;
   margin-top: 8px;
 }
-
-.pf-actions-start {
-  justify-content: flex-start;
-}
-
-.pf-actions-end {
-  justify-content: flex-start;
-}
+.pf-actions-start { justify-content: flex-start; }
+.pf-actions-end { justify-content: flex-start; }
 
 .pf-btn {
   border: 1px solid var(--brand);
@@ -320,6 +285,11 @@ body {
 .pf-sep {
   margin: 28px 0;
   border: none;
+  border-top: 1px solid var(--border);
+}
+
+.pf-sep.thin {
+  margin: 10px 0;
   border-top: 1px solid var(--border);
 }
 
@@ -367,490 +337,13 @@ body {
   border-color: var(--brand-ghost);
 }
 
-.badge.pay {
-  background: #fff;
-}
-
-.badge.ship {
-  background: #fff;
-}
-
-/* Dialog */
-.pf-dialog{
-  width: auto !important;
-  max-width: min(980px, calc(100vw - 24px)) !important;
-  margin: 12px auto !important;
-  padding: 0 !important;
-  border: none;
-  border-radius: 16px;
-
-  /* 🔑 permite que el contenido tenga scroll */
-  max-height: calc(100dvh - 24px);
-}
-
-.pf-dialog::backdrop {
-  background: rgba(0, 0, 0, .35);
-}
-
-/* Tabla de artículos del detalle */
-.od-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.od-table th,
-.od-table td {
-  padding: 10px 8px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-
-.od-table th {
-  text-align: left;
-  color: var(--muted);
-  font-weight: 700;
-}
-
-.od-num {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.od-mono {
-  font-variant-numeric: tabular-nums;
-}
-
-/* Totales */
-.od-totals {
-  display: grid;
-  grid-template-columns: 1fr minmax(260px, 320px);
-  gap: 18px;
-  align-items: start;
-  margin-top: 12px;
-}
-
-.od-totals-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  background: var(--surface);
-}
-
-.od-kv {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 6px 12px;
-}
-
-.od-kv div {
-  padding: 6px 0;
-}
-
-.od-kv .od-sep {
-  grid-column: 1/-1;
-  border-top: 1px dashed var(--border);
-  margin: 4px 0;
-}
-
-.od-strong {
-  font-weight: 800;
-}
-
-/* Comprobantes */
-.od-proofs {
-  margin-top: 14px;
-}
-
-.od-proofs-list {
-  display: grid;
-  gap: 8px;
-}
-
-.od-proof {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 8px 10px;
-}
-
-/* Toast */
-#pdToast {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 9999;
-  max-width: 320px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: var(--brand);
-  color: #fff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
-  opacity: 0;
-  transform: translateY(12px);
-  pointer-events: none;
-  transition: opacity .25s ease, transform .25s ease;
-  font: 600 14px/1.3 var(--font-body);
-}
-
-#pdToast.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Responsive */
-@media (max-width:1080px) {
-  .pf-sheet {
-    margin: 0 8px;
-  }
-}
-
-@media (max-width:960px) {
-  .pf-layout {
-    grid-template-columns: 1fr;
-    min-height: unset;
-    align-items: start;
-  }
-
-  .pf-sidebar {
-    position: relative;
-    top: auto;
-    z-index: auto;
-    padding-bottom: 0;
-    align-self: start;
-    height: auto;
-  }
-
-  .pf-menu-toggle {
-    display: block;
-  }
-
-  .pf-nav {
-    display: none;
-    margin-top: 8px;
-    margin: 0;
-  }
-
-  .pf-nav.open {
-    display: flex;
-  }
-
-  .pf-content {
-    padding: 20px;
-  }
-
-  .pf-cols-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .pf-avatar {
-    width: 52px;
-    height: 52px;
-  }
-
-  .od-totals {
-    grid-template-columns: 1fr;
-  }
-
-  /* Totales en una sola columna en móvil */
-}
-
-/* Logo más grande en el header */
-.pf-header {
-  height: 76px;
-  padding: 0 20px;
-}
-
-.pf-brand img {
-  height: 200px;
-  width: auto;
-  display: block;
-}
-
-/* Móvil: logo más pequeño */
-@media (max-width:960px) {
-  .pf-header {
-    height: 64px;
-  }
-
-  .pf-brand img {
-    height: 44px;
-  }
-}
+.badge.pay,
+.badge.ship { background: #fff; }
 
 /* =========================
-   OVERRIDES: Modal detalle orden (CLIENTE) para que se vea como ADMIN
-   Pegarlo al FINAL del CSS de perfil (cliente)
+   MODAL (DETALLE PEDIDO)
    ========================= */
 
-/* 1) Dialog: mismo tamaño y padding que admin */
-.pf-dialog {
-  width: min(980px, 96vw);
-  padding: 0;
-  border: none;
-  border-radius: 16px;
-}
-
-.pf-dialog::backdrop {
-  background: rgba(0, 0, 0, .35);
-}
-
-/* 2) Contenedor interno del modal (lo que metés en #odBody) */
-.pf-dialog #odBody {
-  padding: 16px;
-}
-
-/* 3) “Cards” del modal: mismo look admin (bordes/round/shadow suave) */
-.pf-dialog .pf-card,
-.pf-dialog .pf-sheet,
-.pf-dialog .od-totals-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, .04);
-}
-
-/* En el modal, tu .pf-sheet a veces lo ponías sin shadow inline;
-   esto lo fuerza a verse como admin aunque tengas estilos inline */
-.pf-dialog .pf-sheet {
-  max-width: 100%;
-  margin: 0;
-}
-
-/* 4) Tabla: header gris + tipografía como admin */
-.pf-dialog table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.pf-dialog thead th {
-  background: #fafafa;
-  font-weight: 800;
-  color: var(--muted);
-}
-
-.pf-dialog th,
-.pf-dialog td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-}
-
-/* 5) Separadores: que se vean como admin (menos “pesados”) */
-.pf-dialog .pf-sep {
-  margin: 14px 0;
-  border-top: 1px solid var(--border);
-}
-
-.pf-dialog .pf-sep.thin {
-  margin: 10px 0;
-}
-
-/* 6) Botones del modal (Cerrar / chips) más tipo admin */
-.pf-dialog .pf-btn {
-  border: 1px solid var(--brand);
-  background: var(--brand);
-  color: #fff;
-  padding: 8px 14px;
-  border-radius: 12px;
-  font-weight: 800;
-}
-
-.pf-dialog .pf-btn.ghost {
-  background: #fff;
-  color: var(--brand-strong);
-  border-color: var(--border);
-}
-
-/* =========================
-   FIX: Modal cliente centrado (quita espacio en blanco a la derecha)
-   ========================= */
-
-/* el dialog ya lo tenés en 980px; lo dejamos igual */
-.pf-dialog {
-  width: min(980px, 96vw);
-  padding: 0;
-}
-
-/* 🔑 el problema suele ser el <form> interno */
-.pf-dialog>form {
-  width: 100%;
-  max-width: none;
-  /* importante: evita que se quede en 820px */
-  padding: 20px;
-  /* sin margen raro */
-}
-
-/* asegura que el body del modal use todo el ancho */
-.pf-dialog #odBody {
-  width: 100%;
-  margin: 0;
-  padding: 16px;
-  /* tu padding interno */
-}
-
-/* si tenés wrappers con max-width, los neutralizamos SOLO dentro del dialog */
-.pf-dialog .pf-sheet,
-.pf-dialog .pf-card,
-.pf-dialog .od-totals-card {
-  width: 100%;
-  max-width: none;
-}
-
-/* =========================
-   FIX modal detalle: líneas, tablas y upload no se revienta
-   Pegar al FINAL
-   ========================= */
-
-/* 1) “pf-line” (Totales): que sea fila pro y que no se salga */
-.pf-dialog .pf-line{
-  display:grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: baseline;
-}
-.pf-dialog .pf-line span{ color: var(--muted); }
-.pf-dialog .pf-line strong{
-  justify-self: end;
-}
-
-/* 2) Evita que cualquier contenido largo se salga del modal */
-.pf-dialog #odBody,
-.pf-dialog #odBody *{
-  max-width: 100%;
-}
-
-/* 3) Tabla de artículos: scroll horizontal SOLO dentro del cuadro */
-.pf-dialog .od-table-wrap{
-  overflow:auto;
-  max-width:100%;
-  border-radius:12px;
-}
-.pf-dialog .od-table-wrap table{
-  min-width: 640px; /* fuerza scroll adentro en móvil */
-}
-
-/* 4) Cards de comprobantes: que no exploten por links largos */
-.pf-dialog #odComps .pf-card{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.pf-dialog #odComps .pf-card a{
-  word-break: break-word;
-}
-
-/* 5) Upload: layout en grid para que no se vaya a la derecha */
-.pf-dialog .od-upload{
-  margin-top: 12px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto; /* minmax(0,1fr) es el fix real */
-  gap: 12px;
-  align-items: end;
-  min-width: 0;
-}
-
-.pf-dialog .od-upload label{
-  white-space: normal;
-  min-width: 0;
-}
-
-.pf-dialog .od-upload input[type="file"]{
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;  /* importantísimo para que no empuje */
-}
-
-/* botón no se sale */
-.pf-dialog .od-upload .pf-btn{
-  white-space: nowrap;
-  justify-self: end;
-}
-
-/* 6) En móvil: todo en una columna */
-@media (max-width: 560px){
-  .pf-dialog .od-upload{
-    grid-template-columns: 1fr;
-  }
-  .pf-dialog .od-upload .pf-btn{
-    width: 100%;
-    justify-self: stretch;
-  }
-}
-
-/* =========================
-   FIX: el modal NUNCA se pasa del viewport (iPhone safe area)
-   ========================= */
-.pf-dialog{
-  width: auto !important;
-  max-width: min(980px, calc(100vw - 24px)) !important;
-  margin: 12px auto !important;     /* centra */
-  padding: 0 !important;
-  border: none;
-  border-radius: 16px;
-  overflow: hidden;                 /* clave: nada “se sale” visualmente */
-}
-
-@supports (padding: max(0px)) {
-  .pf-dialog{
-    max-width: min(980px, calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right))) !important;
-    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  }
-}
-
-/* iOS notch: que no choque con los bordes */
-@supports (padding: max(0px)) {
-  .pf-dialog{
-    max-width: min(980px, calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right))) !important;
-  }
-}
-
-.pf-dialog > form{
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-
-  /* 🔑 el form ocupa la altura disponible del dialog */
-  max-height: inherit;
-}
-
-
-.pf-dialog #odBody{
-  width: 100%;
-  margin: 12px 0 0;
-
-  /* 🔑 scroll vertical del contenido */
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  flex: 1;
-  min-height: 0; /* importantísimo para que flex permita scroll */
-}
-
-
-/* Los cards del modal no deben “crear” ancho extra */
-.pf-dialog .pf-card,
-.pf-dialog .pf-sheet{
-  min-width: 0;     /* clave para grid/flex */
-  overflow: hidden; /* si algo es largo, se recorta o hace wrap */
-}
-
-/* =========================
-   MODAL DETALLE PEDIDO (CLIENTE) — FINAL FIX
-   - Respeta ancho del modal
-   - Scroll vertical dentro del modal (en #odBody)
-   - Scroll horizontal solo en tabla (od-table-wrap)
-   - Upload no revienta
-   ========================= */
-
-/* Dialog: nunca se pasa del viewport + safe area iOS */
 .pf-dialog{
   width: auto !important;
   max-width: min(980px, calc(100vw - 24px)) !important;
@@ -874,98 +367,194 @@ body {
   }
 }
 
-.pf-dialog::backdrop{
-  background: rgba(0,0,0,.35);
-}
+.pf-dialog::backdrop { background: rgba(0,0,0,.35); }
 
-/* El form es el “layout” del modal */
+/* Form layout del modal */
 .pf-dialog > form{
   width: 100%;
   max-width: none;
   margin: 0;
   padding: 20px;
-
   display: flex;
   flex-direction: column;
-
-  /* clave para que #odBody pueda scrollear */
   max-height: inherit;
   min-height: 0;
 }
 
-/* Aquí vive el scroll vertical */
+/* Scroll vertical vive aquí */
 .pf-dialog #odBody{
   width: 100%;
   margin-top: 12px;
-
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-
   flex: 1;
   min-height: 0;
 }
 
-/* Totales: filas alineadas y sin salirse */
-.pf-dialog .pf-line{
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: baseline;
+/* Dentro del modal: cards/sheets consistentes */
+.pf-dialog .pf-card,
+.pf-dialog .pf-sheet{
+  width: 100%;
+  max-width: none;
+  min-width: 0;
 }
-.pf-dialog .pf-line span{ color: var(--muted); }
-.pf-dialog .pf-line strong{ justify-self: end; white-space: nowrap; }
 
-/* Tabla: scroll horizontal SOLO dentro del cuadro */
+.pf-dialog .pf-sheet{
+  margin: 0;
+  border-radius: 14px;
+}
+
+/* Tabla artículos: scroll horizontal solo aquí */
 .pf-dialog .od-table-wrap{
   overflow: auto;
   max-width: 100%;
   border-radius: 12px;
-}
-.pf-dialog .od-table-wrap table{
-  min-width: 640px; /* fuerza scroll interno en móvil */
+  border: 1px solid var(--border);
 }
 
-/* Comprobantes: links largos no rompen */
+.pf-dialog .od-table-wrap table{
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px; /* mantiene scroll interno en móvil */
+}
+
+.pf-dialog thead th{
+  background: #fafafa;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.pf-dialog th,
+.pf-dialog td{
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+/* Totales: EXACTO como “Artículos” en orden (2 columnas limpias) */
+.pf-dialog .pf-card-list{
+  display: grid;
+  gap: 8px;
+}
+
+.pf-dialog .pf-line{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 6px 0;
+}
+
+.pf-dialog .pf-line span{
+  color: var(--muted);
+  min-width: 0;
+}
+
+.pf-dialog .pf-line strong{
+  justify-self: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Si algo es largo dentro del modal, que NO cree ancho extra */
+.pf-dialog #odBody *{ max-width: 100%; }
+
+/* Comprobantes: tarjetas ordenadas */
+.pf-dialog #odComps{
+  display: grid;
+  gap: 10px;
+}
+
 .pf-dialog #odComps .pf-card{
+  padding: 10px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
-  min-width: 0;
 }
+
 .pf-dialog #odComps .pf-card a{
   word-break: break-word;
 }
 
-/* Upload: grid que NO empuja el modal */
+/* Upload: se ve “pro” y no se rompe */
 .pf-dialog .od-upload{
   margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
   align-items: end;
   min-width: 0;
 }
+
 .pf-dialog .od-upload label{
-  white-space: normal;
-  min-width: 0;
   display: grid;
   gap: 8px;
   font-weight: 800;
   font-size: 14px;
+  min-width: 0;
+  white-space: normal;
 }
+
 .pf-dialog .od-upload input[type="file"]{
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  padding: 10px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
 }
+
 .pf-dialog .od-upload .pf-btn{
   white-space: nowrap;
   justify-self: end;
+  padding: 10px 14px;
 }
 
-/* Móvil: upload en una columna */
+/* Responsive */
+@media (max-width:1080px) {
+  .pf-sheet { margin: 0 8px; }
+}
+
+@media (max-width:960px) {
+  .pf-layout {
+    grid-template-columns: 1fr;
+    min-height: unset;
+    align-items: start;
+  }
+
+  .pf-sidebar {
+    position: relative;
+    top: auto;
+    z-index: auto;
+    padding-bottom: 0;
+    align-self: start;
+    height: auto;
+  }
+
+  .pf-menu-toggle { display: block; }
+
+  .pf-nav {
+    display: none;
+    margin-top: 8px;
+    margin: 0;
+  }
+
+  .pf-nav.open { display: flex; }
+
+  .pf-content { padding: 20px; }
+
+  .pf-cols-2 { grid-template-columns: 1fr; }
+
+  .pf-avatar { width: 52px; height: 52px; }
+}
+
+/* Upload en móvil: 1 columna y botón full width */
 @media (max-width: 560px){
   .pf-dialog .od-upload{
     grid-template-columns: 1fr;
@@ -974,4 +563,46 @@ body {
     width: 100%;
     justify-self: stretch;
   }
+}
+
+/* Logo más grande en el header */
+.pf-header {
+  height: 76px;
+  padding: 0 20px;
+}
+
+.pf-brand img {
+  height: 200px;
+  width: auto;
+  display: block;
+}
+
+/* Móvil: logo más pequeño */
+@media (max-width:960px) {
+  .pf-header { height: 64px; }
+  .pf-brand img { height: 44px; }
+}
+
+/* Toast */
+#pdToast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  max-width: 320px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+  font: 600 14px/1.3 var(--font-body);
+}
+
+#pdToast.show {
+  opacity: 1;
+  transform: translateY(0);
 }
