@@ -606,3 +606,148 @@ html, body {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* =========================
+   FIX REAL: Totales + Comprobantes + Upload (Móvil)
+   Requiere los mini cambios de JS (clases)
+   ========================= */
+
+/* Títulos dentro de secciones del modal */
+.pf-dialog .od-sec-title{
+  margin: 0 0 8px;
+}
+
+/* --- TOTALES --- */
+.pf-dialog .od-totals-card{
+  padding: 12px;
+}
+
+/* Lista key/value como “Artículos”: estable en móvil */
+.pf-dialog .od-kv{
+  display: grid;
+  gap: 6px;
+}
+
+/* Fuerza layout SIEMPRE alineado (más confiable que grid en algunos casos) */
+.pf-dialog .pf-line{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pf-dialog .pf-line span{
+  color: var(--muted);
+  min-width: 0;
+  flex: 1;
+}
+
+.pf-dialog .pf-line strong{
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Separador fino */
+.pf-dialog .pf-sep.thin{
+  margin: 10px 0;
+}
+
+/* Caja de pesos (evita que se vaya a la derecha o se monte) */
+.pf-dialog .od-weight{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fafafa;
+  color: var(--muted);
+  font-size: 13px;
+  display: grid;
+  gap: 6px;
+}
+.pf-dialog .od-weight strong{
+  color: var(--text);
+  font-weight: 800;
+}
+
+/* --- COMPROBANTES --- */
+.pf-dialog .od-comps-list{
+  display: grid;
+  gap: 8px;
+}
+
+/* Empty state bonito y sin layout raro */
+.pf-dialog .od-empty{
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--muted);
+  background: #fff;
+}
+
+/* Tarjetas de comprobantes: full width, wrap correcto */
+.pf-dialog .od-comps-list .pf-card{
+  width: 100%;
+  padding: 10px 12px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.pf-dialog .od-comps-list .pf-card a{
+  word-break: break-word;
+}
+
+/* --- UPLOAD --- */
+.pf-dialog .od-upload{
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+
+  min-width: 0;
+}
+
+.pf-dialog .od-upload label{
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.pf-dialog .od-upload input[type="file"]{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: block;
+
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 13px;
+}
+
+/* botón siempre dentro */
+.pf-dialog .od-upload .pf-btn{
+  white-space: nowrap;
+  justify-self: end;
+  padding: 10px 14px;
+}
+
+/* Móvil real (como tu screenshot): una columna para que NO se monte */
+@media (max-width: 420px){
+  .pf-dialog .od-upload{
+    grid-template-columns: 1fr;
+  }
+  .pf-dialog .od-upload .pf-btn{
+    width: 100%;
+    justify-self: stretch;
+  }
+}
