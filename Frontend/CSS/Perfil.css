@@ -800,3 +800,39 @@ html, body {
     justify-self: stretch;
   }
 }
+
+/* =========================
+   Ajuste fino: "Sin comprobantes aún"
+   abajo a la izquierda
+   ========================= */
+
+/* El card de comprobantes como layout base */
+.pf-dialog .pf-card{
+  position: relative;
+}
+
+/* Mensaje de "Sin comprobantes aún" */
+.pf-dialog #odComps > .pf-card{
+  align-self: flex-start;
+}
+
+/* Cuando NO hay comprobantes, movemos el mensaje */
+.pf-dialog #odComps:has(.pf-card:only-child){
+  position: relative;
+  padding-bottom: 8px;
+}
+
+/* El texto */
+.pf-dialog #odComps .pf-card{
+  max-width: 65%;
+  margin-top: 8px;
+  margin-right: auto;   /* 👈 izquierda */
+}
+
+/* En móvil: que no se vea apretado */
+@media (max-width: 520px){
+  .pf-dialog #odComps .pf-card{
+    max-width: 100%;
+  }
+}
+
