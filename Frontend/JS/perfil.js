@@ -519,16 +519,17 @@
             <div class="pf-line" style="font-weight:900;"><span>Total</span> <strong>${fmtCRC(tot.gran_total || 0)}</strong></div>
           </div>
           ${(o.flags?.tiene_peso_variable || peso?.real_total_kg != null)
-        ? `<div class="od-weight">
-       <div class="od-weight-item">
-         <div class="od-weight-label">Peso máximo estimado</div>
-         <div class="od-weight-value">${peso?.max_total_kg ?? '—'} kg</div>
-       </div>
-       <div class="od-weight-item">
-         <div class="od-weight-label">Peso real</div>
-         <div class="od-weight-value">${peso?.real_total_kg ?? '—'} kg</div>
-       </div>
-     </div>` : ''}
+            ? `<div class="od-weight">
+                <div class="od-weight-item">
+                  <div class="od-weight-label">Peso máximo estimado</div>
+                  <div class="od-weight-value">${peso?.max_total_kg ?? '—'} <span>kg</span></div>
+                </div>
+                <div class="od-weight-item">
+                  <div class="od-weight-label">Peso real</div>
+                  <div class="od-weight-value">${peso?.real_total_kg ?? '—'} <span>kg</span></div>
+                </div>
+              </div>` : ''}
+
         </div>
 
         <div class="pf-card" style="padding:12px;">
