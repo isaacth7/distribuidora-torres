@@ -66,32 +66,49 @@ router.get('/bolsas/:id/pricing', async (req, res) => {
 
     // 4) Packs (por SKU)
     const packs = await pool.query(
-      `SELECT pack_qty, precio_por_pack, moneda,
-          id_bolsa, id_subtipo_bolsa, id_tipo_bolsa
-     FROM pricing_regla
-    WHERE estrategia='por_pack'
-      AND (id_bolsa=$1 OR id_subtipo_bolsa=$2 OR id_tipo_bolsa=$3)
-      AND (vigente_desde IS NULL OR vigente_desde <= CURRENT_DATE)
-      AND (vigente_hasta IS NULL OR vigente_hasta >= CURRENT_DATE)
- ORDER BY CASE
-            WHEN id_bolsa IS NOT NULL THEN 1
-            WHEN id_subtipo_bolsa IS NOT NULL THEN 2
-            ELSE 3
-          END,
-          pack_qty ASC`,
+      `WITH candidates AS (
+  SELECT
+    pack_qty,
+    precio_por_pack,
+    moneda,
+    CASE
+      WHEN id_bolsa = $1 THEN 1
+      WHEN id_bolsa IS NULL AND id_subtipo_bolsa = $2 THEN 2
+      WHEN id_bolsa IS NULL AND id_subtipo_bolsa IS NULL AND id_tipo_bolsa = $3 THEN 3
+      ELSE NULL
+    END AS prio
+  FROM pricing_regla
+  WHERE estrategia = 'por_pack'
+    AND (vigente_desde IS NULL OR vigente_desde <= CURRENT_DATE)
+    AND (vigente_hasta IS NULL OR vigente_hasta >= CURRENT_DATE)
+    AND (
+      (id_bolsa = $1)
+      OR (id_bolsa IS NULL AND id_subtipo_bolsa = $2)
+      OR (id_bolsa IS NULL AND id_subtipo_bolsa IS NULL AND id_tipo_bolsa = $3)
+    )
+),
+picked AS (
+  SELECT * FROM candidates
+  WHERE prio IS NOT NULL
+    AND prio = (SELECT MIN(prio) FROM candidates WHERE prio IS NOT NULL)
+)
+SELECT pack_qty, precio_por_pack, moneda
+FROM picked
+ORDER BY pack_qty ASC;
+`,
       [b.id_bolsa, b.id_subtipo_bolsa, b.id_tipo_bolsa]
     );
 
     if (packs.rowCount) {
-      return res.json({
-        estrategia: 'por_pack',
-        moneda: packs.rows[0].moneda,
-        packs: packs.rows.map(r => ({
-          pack_qty: Number(r.pack_qty),
-          precio_por_pack: Number(r.precio_por_pack)
-        }))
-      });
-    }
+  return res.json({
+    estrategia: 'por_pack',
+    moneda: packs.rows[0].moneda,
+    packs: packs.rows.map(r => ({
+      pack_qty: Number(r.pack_qty),
+      precio_por_pack: Number(r.precio_por_pack),
+    }))
+  });
+}
 
     return res.status(404).json({ error: 'sin regla de precio' });
   } catch (err) {
