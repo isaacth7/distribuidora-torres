@@ -274,6 +274,7 @@ router.post('/orders/checkout', auth, async (req, res) => {
     // Ítems del carrito (bloqueados)
     const { rows: rawItems } = await pool.query(
       `SELECT cp.id_bolsa, cp.cantidad, cp.precio_aplicado, cp.pricing_snapshot,
+              cp.pack_qty,
               b.es_peso_variable
          FROM carrito_productos cp
          JOIN bolsas b ON b.id_bolsa = cp.id_bolsa
@@ -294,6 +295,7 @@ router.post('/orders/checkout', auth, async (req, res) => {
 
     const items = rawItems.map(row => {
       const qty = Number(row.cantidad);
+      const pack_qty = row.pack_qty != null ? Number(row.pack_qty) : null;
       const isVar = row.es_peso_variable === true || row.es_peso_variable === 1;
       anyVariable = anyVariable || isVar;
 
@@ -343,7 +345,8 @@ router.post('/orders/checkout', auth, async (req, res) => {
 
       return {
         id_bolsa: row.id_bolsa,
-        cantidad: qty,
+        cantidad: qty, 
+        pack_qty,
         es_peso_variable: isVar,
         precio_unitario,
         precio_por_kg_aplicado,
@@ -417,7 +420,7 @@ router.post('/orders/checkout', auth, async (req, res) => {
       it.precio_unitario,
       it.es_peso_variable,
       it.precio_por_kg_aplicado,
-      null, // pack_qty
+      it.pack_qty,
       it.peso_max_total_kg,
       null, // peso_real_total_kg
       it.subtotal_estimado_max,
