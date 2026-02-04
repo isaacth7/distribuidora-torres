@@ -135,7 +135,6 @@ router.get('/orders', auth, async (req, res) => {
      ORDER BY o.fecha DESC`,
       [userId]
     );
-    // coherencia de tipos
     const data = rows.map(r => ({
       id_orden: r.id_orden,
       fecha: r.fecha,
@@ -147,7 +146,10 @@ router.get('/orders', auth, async (req, res) => {
     res.json(data);
   } catch (e) {
     console.error('[orders:list]', e);
-    res.status(500).json({ error: 'No se pudieron obtener las órdenes', ...(isDev && { detail: e.detail || e.message, code: e.code, where: 'orders:list' }) });
+    res.status(500).json({
+      error: 'No se pudieron obtener las órdenes',
+      ...(isDev && { detail: e.detail || e.message, code: e.code, where: 'orders:list' })
+    });
   }
 });
 
@@ -182,8 +184,9 @@ router.get('/orders/:id', auth, async (req, res) => {
     const o = rOrden.rows[0];
     if (!o) return res.status(404).json({ error: 'Orden no encontrada' });
 
+    // ✅ Incluye op.pack_qty para devolverlo al front
     const rItems = await pool.query(
-      `SELECT  op.id_bolsa, op.cantidad, op.precio_unitario,
+      `SELECT  op.id_bolsa, op.cantidad, op.precio_unitario, op.pack_qty,
                (CASE WHEN op.es_peso_variable THEN op.subtotal_final ELSE op.cantidad * op.precio_unitario END) AS subtotal,
                b.descripcion_bolsa, b.ancho, b.alto
          FROM orden_productos op
@@ -198,6 +201,7 @@ router.get('/orders/:id', auth, async (req, res) => {
       dimensiones: { ancho: r.ancho, alto: r.alto },
       precio_unitario: r.precio_unitario !== null ? Number(r.precio_unitario) : null,
       cantidad: Number(r.cantidad),
+      pack_qty: r.pack_qty !== null ? Number(r.pack_qty) : null, // ✅
       subtotal: r.subtotal !== null ? Number(r.subtotal) : null,
     }));
 
@@ -237,7 +241,10 @@ router.get('/orders/:id', auth, async (req, res) => {
     });
   } catch (e) {
     console.error('[orders:detail]', e);
-    res.status(500).json({ error: 'No se pudo obtener el detalle de la orden', ...(isDev && { detail: e.detail || e.message, code: e.code, where: 'orders:detail' }) });
+    res.status(500).json({
+      error: 'No se pudo obtener el detalle de la orden',
+      ...(isDev && { detail: e.detail || e.message, code: e.code, where: 'orders:detail' })
+    });
   }
 });
 
@@ -310,10 +317,12 @@ router.post('/orders/checkout', auth, async (req, res) => {
           : (row.pricing_snapshot || null);
       } catch { }
 
+      // ✅ pack_qty viene de pricing_snapshot (opción 1)
+      const pack_qty = pickNum(snap, 'pack_qty', 'packQuantity', 'qty_por_pack');
+
       if (isVar) {
         precio_por_kg_aplicado = pickNum(snap, 'precio_por_kg', 'price_per_kg', 'p_kg');
         if (!Number.isFinite(precio_por_kg_aplicado)) {
-          // Deja el fallback SOLO si cp.precio_aplicado es "por kg" en tu sistema
           precio_por_kg_aplicado = Number(row.precio_aplicado);
         }
 
@@ -331,7 +340,6 @@ router.post('/orders/checkout', auth, async (req, res) => {
         }
 
         sub_fin = null; // se llenará con peso real
-
       } else {
         precio_unitario = Number(row.precio_aplicado);
         sub_est = n2(precio_unitario * qty);
@@ -344,6 +352,7 @@ router.post('/orders/checkout', auth, async (req, res) => {
       return {
         id_bolsa: row.id_bolsa,
         cantidad: qty,
+        pack_qty: pack_qty !== null ? Number(pack_qty) : null, // ✅
         es_peso_variable: isVar,
         precio_unitario,
         precio_por_kg_aplicado,
@@ -375,9 +384,6 @@ router.post('/orders/checkout', auth, async (req, res) => {
     const subtotal_final = anyVariable ? null : n2(subtotalFin);
     const tiene_peso_variable = anyVariable;
 
-    // Política de gran_total:
-    //   - si hay peso variable, usa estimado (claro en UI como "estimado")
-    //   - si no, usa el final directo
     const base = (subtotal_final ?? subtotal_est_max);
     const gran_total = n2(base - descuento_total + envio_total + impuesto_total);
 
@@ -409,7 +415,7 @@ router.post('/orders/checkout', auth, async (req, res) => {
     );
     const id_orden = orderRows[0].id_orden;
 
-    // INSERT detalle
+    // INSERT detalle (orden_productos)
     const values = items.flatMap(it => [
       id_orden,
       it.id_bolsa,
@@ -417,12 +423,13 @@ router.post('/orders/checkout', auth, async (req, res) => {
       it.precio_unitario,
       it.es_peso_variable,
       it.precio_por_kg_aplicado,
-      null, // pack_qty
+      it.pack_qty,            // ✅ ya NO es null fijo
       it.peso_max_total_kg,
       null, // peso_real_total_kg
       it.subtotal_estimado_max,
       it.subtotal_final
     ]);
+
     const placeholders = items
       .map((_, i) => {
         const b = i * 11;
@@ -473,7 +480,7 @@ router.get('/orders/checkout/preview', auth, async (req, res) => {
     // carrito activo
     const id_carrito = await getActiveCartId(userId);
 
-    // Items del carrito (usa tu columna real descripcion_bolsa, añade es_peso_variable e imagen por subtipo)
+    // Items del carrito
     let items = [];
     if (id_carrito) {
       const hasImgs = await tableExists('imagenes_subtipos');
@@ -626,7 +633,6 @@ const upload = multer({
 
 // Helper para URL pública del archivo
 function publicFileURL(filename, req) {
-  // Si configuras un dominio: process.env.FILES_BASE_URL || `${req.protocol}://${req.get('host')}`
   const base = `${req.protocol}://${req.get('host')}`;
   return `${base}/uploads/${encodeURIComponent(filename)}`;
 }
