@@ -143,6 +143,7 @@ h3,
   gap: 16px;
   color: #999;
   font-size: 16px;
+  border-bottom: 1px solid var(--c-brand);
 }
 
 .contenedor_logo {
@@ -410,7 +411,6 @@ h3,
 .barra_menu {
   width: 100%;
   background: #fff;
-  border-bottom: 1px solid var(--c-brand);
   padding: 12px var(--pad-x-desktop);
   gap: 8px;
   display: flex;

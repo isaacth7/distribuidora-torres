@@ -1,6 +1,5 @@
-
 /* =========================================================
-   Nosotros.css — Distribuidora Torres
+   INICIO.css — Distribuidora Torres
    Versión: 2025-08-28 (refactor)
    Notas:
    - Reorganizado por secciones para lectura rápida.
@@ -86,26 +85,46 @@ h3,
 
 
 /* ============== 2) BARRA DE PROMOCIÓN ============== */
-.barra_promo{
+.barra_promo {
   width: 100%;
   position: relative;
   background: linear-gradient(90deg, var(--c-brand), var(--c-brand-2));
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 12px var(--pad-x-desktop);
   gap: 8px;
   text-align: center;
   font-size: 16px;
   color: #fff;
 }
-.texto_promo{ line-height: 1.4; font-weight: 600; }
-.flecha_promo{ width: 20px; height: 20px; }
 
-@media (max-width: 1024px){
-  .barra_promo{ padding: 12px var(--pad-x-tablet); }
+.texto_promo {
+  line-height: 1.4;
+  font-weight: 600;
 }
-@media (max-width: 600px){
-  .barra_promo{ padding: 10px var(--pad-x-mobile); font-size: clamp(12px, 2.8vw, 14px); gap: 6px; }
-  .texto_promo{ line-height: 1.3; }
+
+.flecha_promo {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 1024px) {
+  .barra_promo {
+    padding: 12px var(--pad-x-tablet);
+  }
+}
+
+@media (max-width: 600px) {
+  .barra_promo {
+    padding: 10px var(--pad-x-mobile);
+    font-size: clamp(12px, 2.8vw, 14px);
+    gap: 6px;
+  }
+
+  .texto_promo {
+    line-height: 1.3;
+  }
 }
 
 
@@ -124,6 +143,7 @@ h3,
   gap: 16px;
   color: #999;
   font-size: 16px;
+  border-bottom: 1px solid var(--c-brand);
 }
 
 .contenedor_logo {
@@ -386,11 +406,11 @@ h3,
   }
 }
 
+
 /* ============== 4) NAV CATEGORÍAS (desktop + off-canvas) ============== */
 .barra_menu {
   width: 100%;
   background: #fff;
-  border-bottom: 1px solid var(--c-brand);
   padding: 12px var(--pad-x-desktop);
   gap: 8px;
   display: flex;

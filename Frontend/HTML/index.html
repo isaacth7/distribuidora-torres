@@ -38,14 +38,18 @@
                 </a>
             </div>
 
-            <!-- Barra de búsqueda accesible (ANTES era un div .barra_navegacion) -->
-            <form class="barra_navegacion" role="search" aria-label="Buscar productos" action="#" method="get">
-                <label class="sr-only" for="q">Buscar</label>
-                <img class="logo_buscar" alt="" src="../Images/buscar.svg" aria-hidden="true">
-                <input id="q" name="q" class="input_buscar" type="search" placeholder="Buscar aquí..."
-                    autocomplete="off">
-                <button class="btn_buscar" type="submit" aria-label="Buscar"></button>
-            </form>
+            <!-- NAV de categorías: reemplaza tu .barra_menu original -->
+            <nav id="menuCategorias" class="barra_menu" aria-label="Categorías">
+                <button class="btn_close_menu" aria-label="Cerrar menú"></button>
+                <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=2">Bolsas Basura</a></div>
+                <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=1">Bolsa Agarradera</a></div>
+                <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=6">Bolsa Rollo</a></div>
+                <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=4">Bolsa Papel</a></div>
+                <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Transparente</a>
+                </div>
+                <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=3">Polipropileno</a></div>
+                <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Blanca</a></div>
+            </nav>
 
             <div class="contenedor_perfil">
                 <!-- Botón hamburguesa (nuevo) -->
@@ -68,17 +72,7 @@
             </div>
         </div>
 
-        <!-- NAV de categorías: reemplaza tu .barra_menu original -->
-        <nav id="menuCategorias" class="barra_menu" aria-label="Categorías">
-            <button class="btn_close_menu" aria-label="Cerrar menú"></button>
-            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=2">Bolsas Basura</a></div>
-            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=1">Bolsa Agarradera</a></div>
-            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=6">Bolsa Rollo</a></div>
-            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=4">Bolsa Papel</a></div>
-            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Transparente</a></div>
-            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=3">Polipropileno</a></div>
-            <div class="menu"><a class="placeholder" href="../HTML/Producto.html?tipo=5">Bolsa Blanca</a></div>
-        </nav>
+
         <!-- Overlay para el off-canvas -->
         <div class="menu_overlay" hidden></div>
     </div>
