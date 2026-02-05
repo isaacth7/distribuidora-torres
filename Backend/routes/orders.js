@@ -318,7 +318,11 @@ router.post('/orders/checkout', auth, async (req, res) => {
       } catch { }
 
       // ✅ pack_qty viene de pricing_snapshot (opción 1)
-      const pack_qty = pickNum(snap, 'pack_qty', 'packQuantity', 'qty_por_pack');
+      const pack_qty =
+        pickNum(snap?.pack_seleccionado, 'pack_qty', 'packQuantity', 'qty_por_pack') ??
+        pickNum(Array.isArray(snap?.packs) ? snap.packs[0] : null, 'pack_qty', 'packQuantity', 'qty_por_pack') ??
+        pickNum(snap, 'pack_qty', 'packQuantity', 'qty_por_pack');
+
 
       if (isVar) {
         precio_por_kg_aplicado = pickNum(snap, 'precio_por_kg', 'price_per_kg', 'p_kg');
