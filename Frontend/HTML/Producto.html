@@ -74,8 +74,11 @@
     <main class="pd-wrapper" aria-busy="true">
         <!-- LOADER (overlay, NO rompe columnas) -->
         <div id="pdLoading" class="pd-loading" hidden>
-            <div class="pd-spinner" aria-hidden="true"></div>
-            <p class="pd-loading-text">Cargando producto...</p>
+            <div class="pd-loading-card" role="status" aria-live="polite">
+                <img class="pd-loading-logo" src="../Images/logo_empresa2.png" alt="Distribuidora Torres">
+                <div class="pd-spinner" aria-hidden="true"></div>
+                <p class="pd-loading-text">Cargando producto...</p>
+            </div>
         </div>
 
         <!-- CONTENIDO REAL -->

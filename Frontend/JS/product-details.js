@@ -99,6 +99,8 @@ function pdSetLoading(isLoading, msg = null) {
 
   if (wrap) wrap.setAttribute('aria-busy', isLoading ? 'true' : 'false');
 
+  document.body.classList.toggle('pd-lock-scroll', isLoading);
+
   if (loading) {
     loading.hidden = !isLoading;
     if (msg != null) {
