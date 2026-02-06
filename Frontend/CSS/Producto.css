@@ -592,13 +592,15 @@ h3,
   display: grid;
   place-items: center;
 }
+
 .pd-photo img{
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
+  object-fit: cover;
+  object-position: 65% 60%; /* prueba valores */
   display: block;
 }
+
 
 /* Columna derecha */
 .pd-title{
