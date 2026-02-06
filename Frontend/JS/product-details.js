@@ -432,7 +432,7 @@ function renderImgs(urls = []) {
 
   for (let i = 0; i < Math.min(max, list.length); i++) {
     const fig = document.createElement('figure');
-    fig.className = 'pd-photo';
+    fig.className = 'pd-photo' + (i === 0 ? '' : ' is-cover'); // 1ra no recorta
 
     const img = document.createElement('img');
     img.src = list[i];
