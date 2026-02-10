@@ -146,58 +146,6 @@ h3,
   border-bottom: 1px solid var(--c-brand);
 }
 
-.barra_navegacion_superior > .contenedor_logo,
-.barra_navegacion_superior > .contenedor_perfil {
-  flex: 0 0 auto;
-  flex-shrink: 0; /* que no se aplasten */
-}
-
-/* el nav (categorías) dentro del header NO debe ser width:100% ni tener padding gigante */
-.barra_navegacion_superior > .barra_menu {
-  flex: 1 1 auto;
-  min-width: 0;
-
-  width: auto;            /* 🔥 mata el width:100% */
-  padding: 0;             /* 🔥 mata padding var(--pad-x-...) */
-  background: transparent;/* para que no parezca otra barra */
-  justify-content: flex-start;
-
-  overflow-x: auto;       /* si no cabe, que haga scroll horizontal */
-  overflow-y: hidden;
-  scrollbar-width: none;
-}
-
-/* ===== FIX: nav scrolleable NO centrado ===== */
-.barra_navegacion_superior > .barra_menu{
-  justify-content: flex-start;   /* 🔥 en vez de center */
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-
-  padding-inline: 12px;          /* un poquito de aire dentro del nav */
-}
-
-.barra_navegacion_superior > .barra_menu .menu{
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
-/* (Opcional) que al cargar siempre arranque desde el inicio */
-.barra_navegacion_superior > .barra_menu{
-  scroll-snap-type: x proximity;
-}
-.barra_navegacion_superior > .barra_menu .menu{
-  scroll-snap-align: start;
-}
-
-.barra_navegacion_superior > .barra_menu::-webkit-scrollbar {
-  display: none;
-}
-
-/* un poquito más compacto para que quepan más ítems */
-.barra_navegacion_superior > .barra_menu .menu {
-  padding: 8px 10px;
-}
-
 .contenedor_logo {
   display: flex;
   align-items: center;
@@ -458,6 +406,91 @@ h3,
   }
 }
 
+
+/* =========================
+   FIX: barra_menu inline SOLO en desktop
+   y drawer normal en mobile
+========================= */
+
+/* DESKTOP: la barra_menu vive dentro del header como nav inline */
+@media (min-width: 901px) {
+  .barra_navegacion_superior > .barra_menu {
+    position: static;
+    inset: auto;
+    transform: none;
+    box-shadow: none;
+
+    flex: 1 1 auto;
+    min-width: 0;
+
+    width: auto;
+    padding: 0 12px;            /* aire interno */
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;    /* 👈 centrado como antes */
+    gap: 8px;
+
+    overflow-x: auto;           /* si no cabe, scroll horizontal */
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .barra_navegacion_superior > .barra_menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .barra_navegacion_superior > .barra_menu .menu {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 8px 10px;
+  }
+
+  /* en desktop no queremos overlay del off-canvas */
+  .menu_overlay { display: none !important; }
+}
+
+/* MOBILE/TABLET: la barra_menu vuelve a ser drawer (como estaba antes) */
+@media (max-width: 900px) {
+  .barra_navegacion_superior > .barra_menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    width: min(86vw, 360px);
+    background: #fff;
+    padding: 72px 20px 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+
+    overflow: auto;
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    box-shadow: -16px 0 40px rgba(0, 0, 0, .08);
+
+    /* resets IMPORTANTES */
+    justify-content: flex-start;
+  }
+
+  .barra_menu.is-open { transform: translateX(0); }
+
+  .barra_navegacion_superior > .barra_menu .menu {
+    padding: 0; /* como estaba antes */
+  }
+
+  .barra_navegacion_superior > .barra_menu .placeholder {
+    display: block;
+    padding: 12px 10px;
+    font-size: 16px;
+    color: #333;
+  }
+}
 
 /* ============== 4) NAV CATEGORÍAS (desktop + off-canvas) ============== */
 .barra_menu {
