@@ -2,20 +2,14 @@ const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,
-  secure: false,              // 587 = STARTTLS (NO secure)
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  },
-  requireTLS: true,           // fuerza STARTTLS
+  port: 465,
+  secure: true,
+  auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
   connectionTimeout: 20000,
   greetingTimeout: 20000,
-  socketTimeout: 20000,
-  tls: {
-    servername: "smtp.gmail.com"
-  }
+  socketTimeout: 20000
 });
+
 
 // opcional pero MUY útil para diagnosticar:
 async function testSMTP() {
