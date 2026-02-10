@@ -83,6 +83,50 @@ h3,
   border: 0;
 }
 
+/* 1) Quitar estilos nativos raros en mobile */
+.auth-modal button,
+.auth-modal input,
+.auth-modal select,
+.auth-modal textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+}
+
+/* 2) Asegurar que los botones NO hereden azul del navegador */
+.auth-modal button {
+  color: #111;               /* <- clave */
+  background: none;
+  border: none;
+}
+
+/* 3) Tus tabs específicamente */
+.auth-tabs .auth-tab {
+  color: #111;               /* <- clave */
+}
+
+/* cuando están activos (por si tenés otro color) */
+.auth-tabs .auth-tab.active {
+  color: #111;
+}
+
+/* 4) El botón cerrar (la X) */
+.auth-close {
+  color: #111;
+}
+
+/* 5) Si tenés links en el modal y querés controlar su color */
+.auth-modal a,
+.auth-modal a:visited {
+  color: var(--c-brand);
+}
+
+/* 6) Quita el “highlight” azul al tocar (iOS/Android) */
+.auth-modal,
+.auth-modal * {
+  -webkit-tap-highlight-color: transparent;
+}
+
 
 /* ============== 2) BARRA DE PROMOCIÓN ============== */
 .barra_promo {
@@ -1537,23 +1581,7 @@ h3,
 
 /* ============== 11) AUTENTICACIÓN (tipos de fuente) ============== */
 /* (Tu UI de auth vive en auth.css, aquí solo normalizamos fuentes) */
-.auth-dialog {
-  font-family: inherit;
-}
-
-.auth-dialog h2 {
-  font-family: var(--font-title);
-  font-weight: 700;
-}
-
-.auth-form label,
-.auth-form input,
-.auth-card,
-.auth-msg,
-.auth-primary,
-.auth-danger {
-  font-family: var(--font-body);
-}
+ 
 
 /* ============== 12) DRAWER DE CARRITO ============== */
 /* Overlay */
