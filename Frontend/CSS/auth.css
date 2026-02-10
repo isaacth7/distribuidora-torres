@@ -33,7 +33,8 @@
     font-size: 22px;
     border: 0;
     background: none;
-    cursor: pointer
+    cursor: pointer;
+    color: #111;
 }
 
 .auth-tabs {
